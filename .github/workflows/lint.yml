@@ -1,0 +1,24 @@
+---
+name: MegaLinter
+on: [workflow_call] # yamllint disable-line rule:truthy
+
+jobs:
+  megalinter:
+    name: megalint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run MegaLinter
+        id: ml
+        uses: megalinter/megalinter@v5
+
+      - name: Archive production artifacts
+        if: ${{ success() }} || ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: MegaLinter reports
+          path: |
+            report
+            mega-linter.log

@@ -1,0 +1,11 @@
+.idea/
+build/
+out/
+/*.iml
+
+# Mac
+.DS_Store
+
+test/lib
+
+report/

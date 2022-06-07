@@ -1,0 +1,19 @@
+---
+name: ORT-ci-action Workflow
+
+on: [push, pull_request] # yamllint disable-line rule:truthy
+
+jobs:
+  dco:
+    uses: ./.github/workflows/dco.yml
+  commitlint:
+    uses: ./.github/workflows/commitlint.yml
+  license:
+    uses: ./.github/workflows/license.yml
+  lint:
+    uses: ./.github/workflows/lint.yml
+  repolint:
+    uses: ./.github/workflows/repolint.yml
+  build-image:
+    needs: [dco, commitlint, license]
+    uses: ./.github/workflows/ort-image-build.yml

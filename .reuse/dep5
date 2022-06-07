@@ -1,0 +1,48 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ort-ci-action
+Source: https://github.com/janderssonse/ort-ci-action
+
+Files: *.yml 
+Copyright: 2022 Josef Andersson
+License: CC0-1.0
+
+Files: *.md 
+Copyright: 2022 Josef Andersson
+License: CC0-1.0
+
+Files: *.js
+Copyright: 2022 Josef Andersson
+License: CC0-1.0
+
+Files: *.adoc
+Copyright: 2022 Josef Andersson
+License: CC0-1.0
+
+Files: .gitignore 
+Copyright: 2022 Josef Andersson
+License: CC0-1.0
+
+Files: docker/Dockerfile.ci
+Copyright: 2020-2022 HERE Europe B.V
+License: Apache-2.0
+
+Files: src/scripts/*.sh
+Copyright: 2020-2022 HERE Europe B.V
+License: Apache-2.0
+
+Files: templates/ort.conf.tmpl
+Copyright: 2020-2022 HERE Europe B.V
+License: Apache-2.0
+
+Files: templates/*.tmpl
+Copyright: 2020-2022 HERE Europe B.V
+License: Apache-2.0
+
+Files: Dockerfile
+Copyright: 2022 Josef Andersson
+License: CC0-1.0
+
+Files: ort-defaults/ort.conf
+Copyright: 2022 Josef Andersson
+License: CC0-1.0
+

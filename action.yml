@@ -1,0 +1,213 @@
+# SPDX-FileCopyrightText: 2022 Josef Andersson
+#
+# SPDX-License-Identifier: CC0-1.0
+
+---
+name: "ORT CI GitHub Action"
+description: "Analyze, Scan, Evaluate and Scan with the ORT - OSS Review Toolkit"
+inputs:
+  disable_shallow_clone:
+    description: |
+      If 'true', the full history of the project is cloned.
+      Only works if VCS_TYPE is 'git' and ORT_DISABLE_DOWNLOADER set to false
+      Only use if know that it is required for your scan.
+    required: false
+
+  fail_on_outdated_notice_file:
+    description: |
+      If 'true', the scan will be considered as failed, if generated NOTICE file differs from the one in your repository.
+    required: false
+
+  notice_file:
+    description: |
+      Path to open source attribution document relative to the VCS root.
+      Defaults to 'FOSS_NOTICE'.
+    required: false
+
+  ort_allow_dynamic_versions:
+    description: |
+      Set to 'true' only if dynamic dependency versions are allowed (note version ranges specified for dependencies may cause unstable results).
+      Applies only to package managers that support lock files, e.g. NPM.
+    required: false
+
+  ort_config_file:
+    description: |
+      Path to repository configuration file relative to the VCS root.
+      Defaults to '.ort.yml'.
+    required: false
+
+  ort_cli_config_tmpl:
+    description: |
+      Path to a general ORT configuration file.
+      Defaults to the ort-ci-base repository (/templates/ort.conf.tmpl).
+    default: "ort.conf.github.tmpl"
+    required: false
+
+  ort_config_repo_url:
+    description: |
+      Url to a git repo containing configuration.
+      Defaults to 'https://github.com/oss-review-toolkit/ort-config.git'.
+    required: false
+
+  ort_config_revision:
+    description: |
+      The Git revision of the ORT_CONFIG_REPO_URL repository to use.
+      Defaults to 'main'.
+    required: false
+
+  ort_disable_advisor:
+    description: |
+      If 'true', ORT's advisor will not run (no security vulnerability checks).
+    required: false
+
+  ort_disable_downloader:
+    description: |
+      If 'true', ORT's downloader will not run (no project download by ORT itself).
+      Depending on CI setup, GitLab/GitHub has per default already cloned your project, so you might not need/want to use ORT downloader.
+    required: false
+
+  ort_disable_evaluator:
+    description: |
+      If 'true', ORT's evaluator will not run (no policy checks).
+    default: "true"
+    required: false
+
+  ort_disable_scanner:
+    description: |
+      If 'true', ORT's scanner will not run (no copyright holders and licenses scan).
+    required: false
+
+  ort_docker_image:
+    default: $ORT_CI_DOCKER_IMAGE
+    description: |
+      The CI Docker ORT Image to use.
+    required: true
+
+  ort_log_level:
+    description: |
+      'debug' to see additional debug output to help tracking down errors.
+      'performance' for less logs.
+      'info' as default.
+    default: "info"
+    required: false
+
+  ort_opts:
+    description: |
+      Extra JVM Options for running ORT Binary.
+    default: ""
+    required: false
+
+  ort_url:
+    default: https://github.com/oss-review-toolkit/ort.git
+    description: |
+      The ORT code base.
+    required: false
+
+  ort_use_dev_db:
+    description: |
+      If 'true', download/upload scanned results from/to development database."
+    required: false
+
+  project_dir:
+    description: |
+      Path to actual cloned project folder in the CI-pipe.
+      Defaults to 'project'.
+    default: "project"
+    required: false
+
+  vcs_path:
+    default: ""
+    description: |
+      Leave empty unless one of the following special cases applies -
+       project VCS_TYPE is git-repo - specify path to repo manifest file (e.g. olympia.xml, note VCS_URL must point to a manifest repository)
+       you require sparse checkout - specify repository sub-path to download and scan (e.g. projects/gradle/, note sparse checkout is
+       possible only for VCS_TYPE git, mercurial or subversion).
+    required: false
+
+  sw_name:
+    description: |
+      Name of project, product or component to be scanned.
+      Defaults to the name of the repository is shown in its clone URL.
+      Only used if ORT_DISABLE_DOWNLOADER is set to false.
+    default: ${{ github.event.repository.name }}
+    required: false
+
+  sw_version:
+    description: |
+      Project version number or release name (use the version from package metadata, not VCS revision).
+      Defaults to Git short SHA (7 char).
+      Only used if ORT_DISABLE_DOWNLOADER is set to false.
+    required: false
+
+  vcs_revision:
+    description: |
+      SHA1 or tag to scan (not branch names, because they can move).
+      If VCS_TYPE is 'git-repo', SHA1 must be unabbreviated, tag names must be prefixed with 'refs/tags/'.
+      Defaults to Git SHA.
+      Only used if ORT_DISABLE_DOWNLOADER is set to false.
+    required: false
+
+  vcs_type:
+    description: |
+      Identifier of the project version control system (git, git-repo, mercurial or subversion). Only used if ORT_DISABLE_DOWNLOADER is set to false.
+    default: "git"
+    required: false
+
+  vcs_url:
+    description: |
+      VCS URL (clone URL) of project to scan.
+    required: false
+
+  # ORT general CI logic repo settings
+  # ---------------------------------
+  ort_ci_base_repo_uri:
+    description: |
+      URI to the ORT CI Base repo.
+      It contains the basic scripts for which different CI wrappers are built.
+    default: janderssonse/ort-ci-base
+    required: true
+
+  ort_ci_base_branch:
+    description: |
+      Script repo, branch name, dev help
+    default: main
+    required: false
+  # ---------------------------------
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout ORT CI Base
+      id: checkout-scripts
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.ort_ci_base_repo_uri }}
+        path: ort-ci-base
+
+    - name: Use the ORT CI Base Image
+      id: ort-docker-ci
+      uses: docker://ghcr.io/janderssonse/ort-ci-action:latest
+      env:
+        ORT_SCRIPTS_DIR: "${{ github.workspace }}/ort-ci-base/src/scripts"
+        ORT_CLI_CONFIG_TMPL: "${{ github.workspace }}/ort-ci-base/templates/${{ inputs.ort_cli_config_tmpl }}"
+        DISABLE_SHALLOW_CLONE: ${{ inputs.disable_shallow_clone }}
+        FAIL_ON_OUTDATED_NOTICE_FILE: ${{ inputs.fail_on_outdated_notice_file }}
+        NOTICE_FILE: ${{ inputs.notice_file }}
+        ORT_ALLOW_DYNAMIC_VERSIONS: ${{ inputs.ort_allow_dynamic_versions }}
+        ORT_CONFIG_REPO_URL: ${{ inputs.ort_config_repo_url }}
+        ORT_CONFIG_REVISION: ${{ inputs.ort_config_revision }}
+        ORT_OPTS: ${{ inputs.ort_opts }}
+        SW_NAME: ${{ inputs.sw_name }}
+        SW_VERSION: ${{ inputs.sw_version }}
+        PROJECT_DIR: ${{ inputs.project_dir }}
+        VCS_PATH: ${{ inputs.vcs_path }}
+        VCS_URL: ${{ inputs.vcs_url }}
+        VCS_REVISION: ${{ inputs.vcs_revision }}
+        ORT_DISABLE_ADVISOR: ${{ inputs.ort_disable_advisor }}
+        ORT_DISABLE_DOWNLOADER: ${{ inputs.ort_disable_downloader }}
+        ORT_DISABLE_EVALUATOR: ${{ inputs.ort_disable_evaluator }}
+        ORT_DISABLE_SCANNER: ${{ inputs.ort_disable_scanner }}
+        ORT_LOG_LEVEL: ${{ inputs.ort_log_level }}
+        ORT_USE_DEV_DB: ${{ inputs.ort_use_dev_db }}
+        ORT_URL: ${{ inputs.ort_url }}
+        ORT_CONFIG_FILE: ${{ inputs.ort_config_file }}

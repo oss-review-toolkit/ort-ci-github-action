@@ -1,0 +1,19 @@
+---
+name: Repolint workflow
+on: [workflow_call] # yamllint disable-line rule:truthy
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  repolinter:
+    name: repolint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Run Repolinter
+        uses: todogroup/repolinter-action@v1
+        with:
+          config_file: repolint.yml

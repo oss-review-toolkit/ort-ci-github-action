@@ -1,0 +1,72 @@
+# SPDX-FileCopyrightText: 2022 Josef Andersson
+#
+# SPDX-License-Identifier: CC0-1.0
+
+---
+name: "ORT CI GitHub Scan Template"
+on: [push]
+
+env:
+  DISABLE_SHALLOW_CLONE:
+  FAIL_ON_OUTDATED_NOTICE_FILE:
+  NOTICE_FILE:
+  ORT_ALLOW_DYNAMIC_VERSIONS:
+  ORT_CONFIG_FILE:
+  ORT_CLI_CONFIG_TMPL: "${{ github.workspace }}/ort-ci-base/templates/ort.conf.tmpl"
+  ORT_CONFIG_REPO_URL:
+  ORT_CONFIG_REVISION:
+  ORT_DISABLE_ADVISOR: "false"
+  ORT_DISABLE_DOWNLOADER: "true"
+  ORT_DISABLE_EVALUATOR: "true"
+  ORT_DISABLE_SCANNER: "true"
+  ORT_LOG_LEVEL: "info"
+  ORT_OPTS: -Xmx5120m
+  ORT_URL: https://github.com/oss-review-toolkit/ort.git
+  ORT_USE_DEV_DB:
+  PROJECT_DIR: "project"
+  VCS_PATH:
+  SW_NAME: ${{ github.event.repository.name }}
+  SW_VERSION:
+  VCS_REVISION:
+  VCS_TYPE: "git"
+  VCS_URL:
+  ORT_CI_BASE_REPO_URI: janderssonse/ort-ci-base
+  ORT_CI_BASE_BRANCH: main
+
+jobs:
+  ort_report_job:
+    runs-on: ubuntu-latest
+    name: Scan dependendencies
+    container:
+      image: ghcr.io/janderssonse/ort-ci-action:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
+
+    steps:
+      - name: Checkout ORT CI base
+        id: checkout-ort-scripts
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.ORT_CI_BASE_REPO_URI }}
+          path: ort-ci-base
+
+      - name: Checkout the project to scan
+        uses: actions/checkout@v3
+        with:
+          path: project
+
+      - name: ORT CI Action
+        id: ort-ci
+        env:
+          ORT_SCRIPTS_DIR: "${{ github.workspace }}/ort-ci-base/src/scripts"
+        run: |
+          . "${GITHUB_WORKSPACE}"/ort-ci-base/src/ort-ci-main.sh && main
+
+      - name: ort-action-artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: analysis
+          path: ./project/ort-results
+
+
