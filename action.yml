@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Josef Andersson
+# SPDX-FileCopyrightText: 2022 HERE GROUP
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -164,7 +164,7 @@ inputs:
     description: |
       URI to the ORT CI Base repo.
       It contains the basic scripts for which different CI wrappers are built.
-    default: janderssonse/ort-ci-base
+    default: ort-review-toolkit/ort-ci-base
     required: true
 
   ort_ci_base_branch:
@@ -186,7 +186,7 @@ runs:
 
     - name: Use the ORT CI Base Image
       id: ort-docker-ci
-      uses: docker://ghcr.io/janderssonse/ort-ci-action:latest
+      uses: docker://ghcr.io/[NAMESPACE]/ort-ci-action:latest
       env:
         ORT_SCRIPTS_DIR: "${{ github.workspace }}/ort-ci-base/src/scripts"
         ORT_CLI_CONFIG_TMPL: "${{ github.workspace }}/ort-ci-base/templates/${{ inputs.ort_cli_config_tmpl }}"

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2022 Josef Andersson
+SPDX-FileCopyrightText: 2022 HERE Europe B.V.
 
 SPDX-License-Identifier: CC0-1.0
 -->
@@ -14,8 +14,8 @@ As a deep code license scanner, you might need to configure more powerful runner
 
 Related siblings projects are:
 
-- [ORT CI Base](https://github.com/janderssonse/ort-ci-base) - Containts base logic (scripts etc.) for running ORT in CI
-- [ORT CI GitLab](https://github.com/janderssonse/ort-ci-gitlab) - GitLab CI templates for running ORT in GitLab environments.
+- [ORT CI Base](https://github.com/oss-review-toolkit/ort-ci-base) - Containts base logic (scripts etc.) for running ORT in CI
+- [ORT CI GitLab](https://github.com/oss-review-toolkit/ort-ci-gitlab) - GitLab CI templates for running ORT in GitLab environments.
 - [ORT CI Tekton] - To-Do
 
 
@@ -23,7 +23,6 @@ Related siblings projects are:
 
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [Maintainers](#maintainers)
 - [License](#license)
 
 ## Usage
@@ -49,7 +48,7 @@ jobs:
 
       - name: ORT CI Action run
         id: ort-ci-action
-        uses: YOUR_ORG/ort-ci-action@84fb404388a78fa8a2059470c6c38bec98c648f4
+        uses: [NAMESPACE]/ort-ci-action@84fb404388a78fa8a2059470c6c38bec98c648f4
         with:
           ort_disable_scanner: true
           ort_disable_downloader: true
@@ -68,7 +67,7 @@ jobs:
             path: ./project/ort-results
 ```
 
-For further configuration options, see [the variables configuration doc](https://github.com/janderssonse/ort-ci-base/blob/main/docs/variables.adoc) or, the [action.yml](action.yml) itself.
+For further configuration options, see [the variables configuration doc](https://github.com/oss-review-toolkit/ort-ci-base/blob/main/docs/variables.adoc) or, the [action.yml](action.yml) itself.
 
 In the given example we are using a few other actions:
 
@@ -90,7 +89,7 @@ At the bottom of the workflow summary page, there is a dedicated section for art
 Currently there is *no* official ORT Image (it will most likely be in the future).
 So until that - clone this repo and build your own:
 
-1) See the ort-ci-action/.github/workflows/ort-image-build.yml for how to build or just use as is.2) In action.yml: replace uses: docker://ghcr.io/janderssonse/ort-ci-action:latest to your builded image.
+1) See the ort-ci-action/.github/workflows/ort-image-build.yml for how to build or just use as is.2) In action.yml: replace uses: docker://ghcr.io/[NAMESPACE]/ort-ci-action:latest to your builded image.
 
 GitHub Actions does not support a private image here yet.
 
@@ -123,26 +122,17 @@ Before commiting a PR, please have run with this linters to avoid red checks. If
 ORT CI Action follows the [Contributor Covenant](http://contributor-covenant.org) Code of Conduct.  
 Please also see the [Contributor Guide](docs/CONTRIBUTING.adoc)
 
-## Maintainers
-
-[Josef Andersson](https://github.com/janderssonse).
-
 ## License
 
-The Action is using ORT to run it's actions, which is under Apache Licenses and:
 
 Copyright (C) 2020-2022 HERE Europe B.V.
 
 ORT CI Action itself is is under
 
-[MIT](LICENSE)
+[APACHE 2.0](LICENSE)
 
 See .reuse/dep5 and file headers for further information.
 Most "scrap" files, textfiles etc are under CC0-1.0, essentially Public Domain.
-
-## Credits
-
-Thanks to the [ORT (OSS Review Toolkit) Project](https://github.com/oss-review-toolkit/ort), for developing such a powerful tool. It fills a void in SCA-toolspace.
 
 ## F.A.Q
 

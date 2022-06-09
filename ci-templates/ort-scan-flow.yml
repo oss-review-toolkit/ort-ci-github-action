@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Josef Andersson
+# SPDX-FileCopyrightText: 2022 HERE Group
 #
 # SPDX-License-Identifier: CC0-1.0
 
@@ -30,7 +30,7 @@ env:
   VCS_REVISION:
   VCS_TYPE: "git"
   VCS_URL:
-  ORT_CI_BASE_REPO_URI: janderssonse/ort-ci-base
+  ORT_CI_BASE_REPO_URI: oss-review-toolkit/ort-ci-base
   ORT_CI_BASE_BRANCH: main
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Scan dependendencies
     container:
-      image: ghcr.io/janderssonse/ort-ci-action:latest
+      image: ghcr.io/[NAMESPACE]/ort-ci-action:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
@@ -68,5 +68,3 @@ jobs:
         with:
           name: analysis
           path: ./project/ort-results
-
-

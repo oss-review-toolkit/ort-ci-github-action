@@ -1,4 +1,4 @@
-ARG BASEIMAGE=ghcr.io/janderssonse/ort-ci-base
+ARG BASEIMAGE=ghcr.io/oss-review-toolkit/ort-ci-base
 FROM $BASEIMAGE
 
 COPY entrypoint.sh /entrypoint.sh

@@ -126,7 +126,7 @@ rules:
           - PULL_REQUEST_TEMPLATE*
           - ".github/PULL_REQUEST_TEMPLATE*"
   notice-file-exists:
-    level: error
+    level: warning
     where:
       - license=Apache-2.0
     rule:
