@@ -34,7 +34,7 @@ runs:
         -v ${{ github.workspace }}:/project \
         --entrypoint /bin/bash \
         ${{ inputs.image }} \
-        -c "id; ls -la"
+        -c "id; pwd; ls -la; cd /project; ls -la"
     - name: ORT Analyzer
       id: analyzer
       shell: bash
