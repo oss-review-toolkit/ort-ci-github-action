@@ -1,14 +1,15 @@
 ---
-name: 'Self scan'
+name: 'Pre-commit checks'
 on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
-  self_scan:
-    name: Self scan
+  pre_commit_checks:
+    name: Pre-commit checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./
+      - uses: actions/setup-python@v3
+      - uses: pre-commit/action@v3.0.0
