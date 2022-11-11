@@ -18,12 +18,15 @@
 
 name: 'ORT GitHub Action'
 description: 'A GitHub Action to run ORT'
+author: 'The ORT Project Authors'
+
 inputs:
   image:
     description: 'Container image to run ORT.'
     required: false
-    # TODO: update to Docker container when
-    default: 'ghcr.io/alliander-opensource/ort-container:latest'
+    # TODO: update to Docker container when it is available
+    default: 'ghcr.io/alliander-opensource/ort-container-pr-6053:latest'
+
 runs:
   using: 'composite'
   steps:
