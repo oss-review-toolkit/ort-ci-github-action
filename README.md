@@ -44,7 +44,7 @@
 
     # Path to open source attribution document.
     notice-file-name: 'NOTICE'
-    
+
     # Set to 'true' only if dynamic dependency versions are allowed (note
     # version ranges specified for dependencies may cause unstable results).
     # Applies only to package managers that support lock files, e.g. NPM
@@ -71,8 +71,22 @@
     package-managers: |
       npm
       pip
-    
+
 ```
+
+## Development
+
+### Pre-commit hooks
+
+Commit hooks are provided using the [pre-commit framework](https://pre-commit.com/).
+Example of setting it up:
+
+```shell
+$ pipx install pre-commit
+$ pre-commit install-hooks
+```
+
+After installation you can also trigger it manually running `pre-commit run --all-files`
 
 # License
 
@@ -81,4 +95,3 @@ Copyright (C) 2020-2022 [The ORT Project Authors](./NOTICE).
 See the [LICENSE](./LICENSE) file in the root of this project for license details.
 
 OSS Review Toolkit (ORT) is a [Linux Foundation project](https://www.linuxfoundation.org) and part of [ACT](https://automatecompliance.org/).
-
