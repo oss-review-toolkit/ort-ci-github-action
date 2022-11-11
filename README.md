@@ -57,20 +57,11 @@
     # Extra JVM environment options when running ORT
     opts: ''
 
-    # Type of ORT  reports to generate.
-    report-formats: |
-      CycloneDx
-      EvaluatedModel
-      GitLabLicenseModel
-      NoticeTemplate
-      SpdxDocument
-      StaticHtml
-      WebApp
+    # Type of ORT reports to generate.
+    report-formats: 'CycloneDx,EvaluatedModel,GitLabLicenseModel,NoticeTemplate,SpdxDocument,StaticHtml,WebApp'
 
     # List of package managers to be used when analyzing the project.
-    package-managers: |
-      npm
-      pip
+    package-managers: 'npm,pip'
 
 ```
 
