@@ -27,12 +27,19 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: ORT Test permissions
+      shell: bash
+      run: |
+        docker run \
+        -v ${{ github.workspace }}:/project \
+        --entrypoint /bin/bash
+        ${{ inputs.image }} \
+        -c "id; ls -la;
     - name: ORT Analyzer
       id: analyzer
       shell: bash
       run: |
         docker run \
         -v ${{ github.workspace }}:/project \
-        --user $(id -u ${USER}) \
         ${{ inputs.image }} \
         analyze
