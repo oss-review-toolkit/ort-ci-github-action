@@ -1,0 +1,14 @@
+name: 'Self scan'
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  self_scan:
+    name: Self scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oss-review-toolkit/ort-ci-github-action@${{ github.ref_name }}
+
