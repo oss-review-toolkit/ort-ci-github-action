@@ -30,8 +30,18 @@ inputs:
     description: 'ORT tools to run.'
     required: false
     default: |
-      analyzer
       reporter
+  report-formats:
+    description: 'Type of ORT  reports to generate.'
+    required: false
+    default:
+      - CycloneDx
+      - EvaluatedModel
+      - GitLabLicenseModel
+      - NoticeTemplate
+      - SpdxDocument
+      - StaticHtml
+      - WebApp
 
 runs:
   using: 'composite'
@@ -46,3 +56,9 @@ runs:
         --user $(id -u ${USER}) \
         ${{ inputs.image }} \
         analyze
+    - name: ORT reporter stub
+      id: reporter-stub
+      shell: bash
+      if: contains(inputs.run, 'reporter')
+      run: |
+        echo "${{ join( inputs.report-formats ) }}"
