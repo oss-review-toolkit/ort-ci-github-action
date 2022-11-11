@@ -32,7 +32,7 @@ runs:
       run: |
         docker run \
         -v ${{ github.workspace }}:/project \
-        --entrypoint /bin/bash
+        --entrypoint /bin/bash \
         ${{ inputs.image }} \
         -c "id; ls -la"
     - name: ORT Analyzer
