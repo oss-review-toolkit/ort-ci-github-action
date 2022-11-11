@@ -17,7 +17,12 @@
 
 name: 'ORT GitHub Action'
 description: 'A GitHub Action to run ORT'
-inputs: {}
+inputs:
+  image:
+    description: 'Container image to run ORT.'
+    required: false
+    # TODO: update to Docker container when
+    default: 'ghcr.io/alliander-opensource/ort-container:latest'
 runs:
   using: 'docker'
   image: TODO
