@@ -25,6 +25,14 @@ inputs:
     # TODO: update to Docker container when
     default: 'ghcr.io/alliander-opensource/ort-container:latest'
 runs:
-  using: 'docker'
-  image: TODO
-  args: []
+  using: 'composite'
+  steps:
+    - name: ORT Analyzer
+      id: analyzer
+      shell: bash
+      run: |
+        docker run \
+        -v ${{ github.workspace }}:/project \
+        --user $(id -u ${USER}) \
+        ${{ inputs.image }} \
+        analyze
