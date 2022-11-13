@@ -11,11 +11,8 @@
     # Name of the repository.
     sw-name: 'my-awesome-project'
 
-    # ORT tools to run.
-    run: |
-      advisor
-      downloader
-      evaluator
+    # Comma separated list of ORT tools to run.
+    run: 'advisor,downloader,evaluator'
 
     # Name of ORT configuration dir.
     config-dir: 'ort-config'
@@ -57,7 +54,7 @@
     # Extra JVM environment options when running ORT
     opts: ''
 
-    # Type of ORT reports to generate.
+    # Comma separated list of types of ORT reports to generate.
     report-formats: 'CycloneDx,EvaluatedModel,GitLabLicenseModel,NoticeTemplate,SpdxDocument,StaticHtml,WebApp'
 
     # List of package managers to be used when analyzing the project.
