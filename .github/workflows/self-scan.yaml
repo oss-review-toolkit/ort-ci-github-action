@@ -10,13 +10,5 @@ jobs:
     name: Self scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Checkout a global ORT config
-        uses: actions/checkout@v3
-        with:
-          repository: oss-review-toolkit/ort-config
-          path: '.ort/config'
-          fetch-depth: 1
-      - name: Run Action itself
-        uses: ./
+      - uses: actions/checkout@v3
+      - uses: ./
