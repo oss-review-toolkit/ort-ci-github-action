@@ -62,6 +62,27 @@
 
 ```
 
+### Usage in a workflow
+
+Examples of how to use this step in a workflow.
+
+```yaml
+job:
+  ort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkout central ORT config of the organisation
+        uses: actions/checkout@v3
+        with:
+          repository: my-organisation/ort-config
+          path: '.ort/config'
+          fetch-depth: 1
+      - uses: oss-review-toolkit/ort-ci-github-action@main
+        with:
+          sw-name: 'My Project'
+```
+
 ## Development
 
 ### Pre-commit hooks
