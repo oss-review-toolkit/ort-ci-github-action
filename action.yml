@@ -22,16 +22,91 @@ author: 'The ORT Project Authors'
 
 inputs:
   image:
-    description: 'Container image to run ORT.'
+    description: |
+      URL for ORT Docker image to use.
     required: false
     # TODO: update to Docker container when it is available
     default: 'ghcr.io/alliander-opensource/ort-container-pr-6053:latest'
-  run:
-    description: 'ORT tools to run.'
+  project-dir:
+    description: |
+      Path to directory within `github.workspace` to be analyzed/scanned with ORT.
+      If empty, `github.workspace` directory is scanned.
     required: false
-    default: |
-      analyzer
-      reporter
+    default: ''
+  advisors:
+    description: |
+      Comma-separated list of security vulnerability advisors to use.
+    required: false
+    default: 'OSV'
+  allow-dynamic-versions:
+    description: |
+      Set to 'true' only if dynamic dependency versions are allowed (note version ranges specified for dependencies may cause unstable results).
+      This field applies only to package managers that support lock files, e.g. NPM.
+    required: false
+    default: 'true'
+  create-source-code-bundle:
+    description: |
+      Set to 'true' only if an archive of source code for configured packages is to be created.
+    required: false
+    default: 'false'
+  log-level:
+    description: |
+      Set value to 'debug' to see additional debug output to help tracking down errors.
+    required: false
+    default: 'warn'
+  ort-yml-file:
+    description: |
+      Path to the .ort.yml (ORT code repository configuration file) relative to root of the repository.
+      By default set to '.ort.yml'.
+    required: false
+    default: ''
+  report-formats:
+    description: |
+      Comma-separated of ORT reporters to run.
+    required: false
+    default: CycloneDx,SpdxDocument,WebApp
+  run:
+    description: |
+      Comma-separated list of optional workflow steps to run.
+    required: false
+    default: 'cache-dependencies, analyzer,scanner,evaluator,advisor,reporter,upload-results'
+  ort-cli-args:
+    description: |
+      List of arguments to pass to ORT CLI, applies to all commands.
+    required: false
+    default: '--stacktrace'
+  ort-cli-analyze-args:
+    description: |
+      List of arguments to pass to ORT Analyzer CLI.
+    required: false
+  ort-cli-scan-args:
+    description: |
+      List of arguments to pass to ORT Scanner CLI.
+    required: false
+  ort-cli-evaluate-args:
+    description: |
+      List of arguments to pass to ORT Evaluator CLI.
+    required: false
+  ort-cli-advise-args:
+    description: |
+      List of arguments to pass to ORT Advisor CLI.
+    required: false
+  ort-cli-report-args:
+    description: |
+      List of arguments to pass to ORT Reporter CLI.
+    required: false
+    default: '-O SpdxDocument=output.file.formats=json,yaml'
+  sw-name:
+    description: |
+      Name of project, product or component to be scanned.
+      By default the name of the repository is used as shown in its clone URL.
+    required: false
+    default: ''
+  sw-version:
+    description: |
+      Project version number or release name (use the version from package metadata, not VCS revision).
+      By default, the Git short SHA is used.
+    required: false
 
 runs:
   using: 'composite'
