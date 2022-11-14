@@ -111,13 +111,275 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Cache dependencies
+      id: cache-dependencies
+      uses: actions/cache@v3
+      if: startsWith(runner.os, 'Linux')
+      with:
+        path: |
+          ~/.cabal/packages
+          ~/.cabal/store
+          ~/.cache/go-build
+          ~/.cache/pip
+          ~/.cache/yarn
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          ~/.composer
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          ~/.ivy2/cache
+          ~/.local/share/virtualenvs
+          ~/.m2/repository
+          ~/.npm
+          ~/.nuget/packages
+          !~/.nuget/packages/unwanted
+          ~/.sbt
+          ~/.stack-work
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-ort-cache
+    - name: Init Workspace
+      id: init
+      shell: bash
+      env:
+        ORT_CLI_ARGS: ${{ inputs.ort-cli-args }}
+        ORT_CLI_ANALYZE_ARGS: ${{ inputs.ort-cli-analyze-args }}
+        ORT_CLI_SCAN_ARGS: ${{ inputs.ort-cli-scan-args }}
+        ORT_CLI_EVALUATE_ARGS: ${{ inputs.ort-cli-evaluate-args }}
+        ORT_CLI_ADVISE_ARGS: ${{ inputs.ort-cli-advise-args }}
+        ORT_CLI_REPORT_ARGS: ${{ inputs.ort-cli-report-args }}
+        ORT_DOCKER_IMAGE: ${{ inputs.image }}
+        ORT_LOG_LEVEL: ${{ inputs.log-level }}
+        ORT_RUN_COMMANDS: ${{ inputs.run }}
+      run: |
+        echo -e "\e[1;33m Initializing ORT in GitHub workspace... "
+        echo " - image: '${ORT_DOCKER_IMAGE}' "
+        echo " - log-level: '${ORT_LOG_LEVEL}' "
+        echo " - run: '${ORT_RUN_COMMANDS}' "
+        [[ -d $HOME/.ort/cache/ ]] || mkdir -p $HOME/.ort/cache/
+        [[ -d $HOME/.ort/config/ ]] || mkdir -p $HOME/.ort/config/
+        [[ -d $HOME/.ort/ort-results/ ]] || mkdir $HOME/.ort/ort-results/
+        [[ -d $HOME/.ort/scanner/archive/ ]] || mkdir -p $HOME/.ort/scanner/archive/; chmod -R aug+w ${HOME}/.ort/
+        chmod -R aug+w ${{ github.workspace }}/
+        echo "ORT_CLI_ARGS=${ORT_CLI_ARGS}" >> "$GITHUB_ENV"
+        echo "ORT_CLI_ANALYZE_ARGS=${ORT_CLI_ANALYZE_ARGS}" >> "$GITHUB_ENV"
+        echo "ORT_CLI_SCANARGS=${ORT_SCAN_CLI_ARGS}" >> "$GITHUB_ENV"
+        echo "ORT_CLI_EVALUATE_ARGS=${ORT_CLI_EVALUATE_ARGS}" >> "$GITHUB_ENV"
+        echo "ORT_CLI_ADVISE_ARGS=${ORT_CLI_ADVISE_ARGS}" >> "$GITHUB_ENV"
+        echo "ORT_CLI_REPORT_ARGS=${ORT_CLI_REPORT_ARGS}" >> "$GITHUB_ENV"
+        export ORT_CONFIG_DIR=${HOME}/.ort/config
+        echo "ORT_CONFIG_DIR=${ORT_CONFIG_DIR}" >> "$GITHUB_ENV"
+        [[ -z "$(ls -A ${ORT_CONFIG_DIR})" ]] && ORT_CONFIG_DIR_IS_EMPTY=true || ORT_CONFIG_DIR_IS_EMPTY=false
+        echo "ORT_CONFIG_DIR_IS_EMPTY=${ORT_CONFIG_DIR_IS_EMPTY}" >> "$GITHUB_ENV"
+        echo "ORT_DOCKER_IMAGE=${ORT_DOCKER_IMAGE}" >> "$GITHUB_ENV"
+        echo "ORT_LOG_LEVEL=${ORT_LOG_LEVEL}" >> "$GITHUB_ENV"
+        echo "ORT_RUN_COMMANDS=${ORT_RUN_COMMANDS}" >> "$GITHUB_ENV"
+        export ORT_RESULTS_DIR=${HOME}/.ort/ort-results
+        echo "ORT_RESULTS_DIR=${ORT_RESULTS_DIR}" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_ADVISOR_FILE=${ORT_RESULTS_DIR}/advisor-result.json" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_ANALYZER_FILE=${ORT_RESULTS_DIR}/analyzer-result.json" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_CURRENT_FILE=${ORT_RESULTS_DIR}/current-result.json" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_EVALUATED_MODEL_FILE=${ORT_RESULTS_DIR}/evaluated-model.json" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_EVALUATOR_FILE=${ORT_RESULTS_DIR}/evaluation-result.json" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_HTML_REPORT_FILE=${ORT_RESULTS_DIR}/ort-results/scan-report.html" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_SCANNER_FILE=${ORT_RESULTS_DIR}/scanner-result.json" >> "$GITHUB_ENV"
+        echo "ORT_RESULTS_WEB_APP_FILE=${ORT_RESULTS_DIR}/scan-report-web-app.html" >> "$GITHUB_ENV"
+    - name: Shallow clone ort-config repository
+      shell: bash
+      if: ${{ env.ORT_CONFIG_DIR_IS_EMPTY }}
+      run: |
+        ORT_CONFIG_VCS_URL="https://github.com/oss-review-toolkit/ort-config.git"
+        echo "ORT_CONFIG_VCS_URL=${ORT_CONFIG_VCS_URL}" >> "$GITHUB_ENV"
+        echo -e "\e[1;33m Retrieving ORT config ORT from ${ORT_CONFIG_VCS_URL}... "
+        cd $ORT_CONFIG_DIR
+        git init -q
+        git remote add origin $ORT_CONFIG_VCS_URL
+        ORT_CONFIG_VCS_REVISION=${ORT_CONFIG_REVISION:-$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')}
+        git fetch -q --depth 1 origin $ORT_CONFIG_REVISION
+        git checkout -q FETCH_HEAD
+        ls -all $ORT_CONFIG_DIR
+    - name: Capture ORT config URL and revisions
+      shell: bash
+      run: |
+        cd $ORT_CONFIG_DIR
+        ORT_CONFIG_VCS_URL=$(git rev-parse HEAD)
+        ORT_CONFIG_VCS_REVISION=$(git config remote.origin.url)
+        echo "ORT_CONFIG_VCS_URL=${ORT_CONFIG_VCS_URL}" >> "$GITHUB_ENV"
+        echo "ORT_CONFIG_VCS_REVISION=${ORT_CONFIG_VCS_REVISION}" >> "$GITHUB_ENV"
+        echo "ORT_CONFIG_VCS_URL: ${ORT_CONFIG_VCS_URL}"
+        echo "ORT_CONFIG_VCS_REVISION: ${ORT_CONFIG_VCS_REVISION}"
     - name: ORT Analyzer
       id: analyzer
       shell: bash
       if: contains(inputs.run, 'analyzer')
+      env:
+        ORT_ALLOW_DYNAMIC_VERSIONS: ${{ inputs.allow-dynamic-versions }}
+        ORT_PROJECT_DIR: ${{ inputs.project-dir }}
+        ORT_YML_FILE: ${{ inputs.ort-yml-file }}
       run: |
+        echo -e "\e[1;33m Running ORT Analyzer... "
+        if [[ ! -z "${ORT_ALLOW_DYNAMIC_VERSIONS}" ]]; then
+          ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} -l ORT_ALLOW_DYNAMIC_VERSIONS=${ORT_ALLOW_DYNAMIC_VERSIONS}"
+        fi
+        if [[ ! -z "${ORT_CONFIG_VCS_URL}" ]]; then
+          ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} -l ORT_CONFIG_VCS_URL=${ORT_CONFIG_VCS_URL}"
+        fi
+        if [[ ! -z "${ORT_CONFIG_VCS_REVISION}" ]]; then
+          ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} -l ORT_CONFIG_VCS_REVISION=${ORT_CONFIG_VCS_REVISION}"
+        fi
+        if [[ ! -z "${ORT_YML}" ]]; then
+          ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} -l ORT_YML_FILE=${ORT_YML_FILE}"
+        fi
+        echo "ORT_CLI_ANALYZE_ARGS: ${ORT_CLI_ANALYZE_ARGS}"
         docker run \
-        -v ${{ github.workspace }}:/project \
-        --user $(id -u ${USER}) \
-        ${{ inputs.image }} \
-        analyze
+        --mount type=bind,source=${{ github.workspace }}/,target=/workspace \
+        --mount type=bind,source=/etc/group,target=/etc/group,readonly \
+        --mount type=bind,source=/etc/passwd,target=/etc/passwd,readonly \
+        --mount type=bind,source=$HOME,target=$HOME \
+        -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
+        -e ORT_DATA_DIR="${HOME}/.ort/" \
+        --user 1000 \
+        $ORT_DOCKER_IMAGE \
+        --$ORT_LOG_LEVEL \
+        -P ort.analyzer.allowDynamicVersions=${ORT_ALLOW_DYNAMIC_VERSIONS} \
+        $ORT_CLI_ARGS \
+        analyze \
+        -i ${{ github.workspace }}/$ORT_PROJECT_DIR \
+        -o $ORT_RESULTS_DIR \
+        -f JSON \
+        ${ORT_CLI_ANALYZE_ARGS}
+        [[ -f $ORT_RESULTS_ANALYZER_FILE ]] && \
+          ln -frs $ORT_RESULTS_ANALYZER_FILE $ORT_RESULTS_CURRENT_FILE || \
+          echo -e "\e[1;31m $ORT_RESULTS_ANALYZER_FILE missing."
+    - name: ORT Scanner
+      id: scanner
+      shell: bash
+      if: contains(inputs.run, 'scanner')
+      run: |
+        echo -e "\e[1;33m Running ORT Scanner... "
+        curl https://raw.githubusercontent.com/oss-review-toolkit/orthw/main/examples/npm-mime-types-2.1.26-scan-result.json > $ORT_RESULTS_SCANNER_FILE
+        # docker run \
+        # --mount type=bind,source=${{ github.workspace }}/,target=/workspace \
+        # --mount type=bind,source=/etc/group,target=/etc/group,readonly \
+        # --mount type=bind,source=/etc/passwd,target=/etc/passwd,readonly \
+        # --mount type=bind,source=$HOME,target=$HOME \
+        # -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
+        # -e ORT_DATA_DIR="${HOME}/.ort/" \
+        # --user 1000 \
+        # $ORT_DOCKER_IMAGE \
+        # --$ORT_LOG_LEVEL \
+        # $ORT_CLI_ARGS \
+        # scan \
+        # -i $ORT_RESULTS_CURRENT_FILE \
+        # -o $ORT_RESULTS_DIR \
+        # -f JSON \
+        # ${ORT_CLI_EVALUATE_ARGS}
+        [[ -f $ORT_RESULTS_SCANNER_FILE ]] && \
+          ln -frs $ORT_RESULTS_SCANNER_FILE $ORT_RESULTS_CURRENT_FILE || \
+          echo -e "\e[1;31m $ORT_RESULTS_SCANNER_FILE missing."
+    - name: ORT Evaluator
+      id: evaluator
+      shell: bash
+      if: contains(inputs.run, 'evaluator')
+      run: |
+        echo -e "\e[1;33m Running ORT Evaluator... "
+        docker run \
+        --mount type=bind,source=${{ github.workspace }}/,target=/workspace \
+        --mount type=bind,source=/etc/group,target=/etc/group,readonly \
+        --mount type=bind,source=/etc/passwd,target=/etc/passwd,readonly \
+        --mount type=bind,source=$HOME,target=$HOME \
+        -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
+        -e ORT_DATA_DIR="${HOME}/.ort/" \
+        --user 1000 \
+        $ORT_DOCKER_IMAGE \
+        --$ORT_LOG_LEVEL \
+        $ORT_CLI_ARGS \
+        evaluate \
+        -i $ORT_RESULTS_CURRENT_FILE \
+        -o $ORT_RESULTS_DIR \
+        -f JSON \
+        ${ORT_CLI_EVALUATE_ARGS}
+        [[ -f $ORT_RESULTS_EVALUATOR_FILE ]] && \
+          ln -frs $ORT_RESULTS_EVALUATOR_FILE $ORT_RESULTS_CURRENT_FILE || \
+          echo -e "\e[1;31m $ORT_RESULTS_EVALUATOR_FILE missing."
+        EXIT_CODE=$?
+        if [[ $EXIT_CODE -ge 2 ]]; then
+            echo "ORT_EVALUATOR_EXIT_CODE=${EXIT_CODE}" >> "$GITHUB_ENV"
+            EXIT_CODE=0
+        fi
+        exit $EXIT_CODE
+    - name: ORT Advisor
+      id: advisor
+      shell: bash
+      if: contains(inputs.run, 'advisor')
+      env:
+        ORT_ADVISORS: ${{ inputs.advisors }}
+      run: |
+        echo -e "\e[1;33m Running ORT Advisor... "
+        docker run \
+        --mount type=bind,source=${{ github.workspace }}/,target=/workspace \
+        --mount type=bind,source=/etc/group,target=/etc/group,readonly \
+        --mount type=bind,source=/etc/passwd,target=/etc/passwd,readonly \
+        --mount type=bind,source=$HOME,target=$HOME \
+        -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
+        -e ORT_DATA_DIR="${HOME}/.ort/" \
+        --user 1000 \
+        $ORT_DOCKER_IMAGE \
+        --$ORT_LOG_LEVEL \
+        $ORT_CLI_ARGS \
+        advise \
+        -i $ORT_RESULTS_CURRENT_FILE \
+        -o $ORT_RESULTS_DIR \
+        -a $ORT_ADVISORS \
+        -f JSON \
+        ${ORT_CLI_ADVISE_ARGS}
+        [[ -f $ORT_RESULTS_ADVISOR_FILE ]] && \
+          ln -frs $ORT_RESULTS_ADVISOR_FILE $ORT_RESULTS_CURRENT_FILE || \
+          echo -e "\e[1;31m $ORT_RESULTS_ADVISOR_FILE missing."
+    - name: ORT Reporter
+      id: reporter
+      shell: bash
+      env:
+        ORT_REPORT_FORMATS: ${{ inputs.report-formats }}
+        SW_NAME: ${{ inputs.sw-name }}
+      if: contains(inputs.run, 'reporter')
+      run: |
+        echo -e "\e[1;33m Running ORT Reporter... "
+        docker run \
+        --mount type=bind,source=${{ github.workspace }}/,target=/workspace \
+        --mount type=bind,source=/etc/group,target=/etc/group,readonly \
+        --mount type=bind,source=/etc/passwd,target=/etc/passwd,readonly \
+        --mount type=bind,source=$HOME,target=$HOME \
+        -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
+        -e ORT_DATA_DIR="${HOME}/.ort/" \
+        --user 1000 \
+        $ORT_DOCKER_IMAGE \
+        --$ORT_LOG_LEVEL \
+        $ORT_CLI_ARGS \
+        report \
+        -i $ORT_RESULTS_CURRENT_FILE \
+        -o $ORT_RESULTS_DIR \
+        -f $ORT_REPORT_FORMATS \
+        -O SpdxDocument=document.name="${SW_NAME}" \
+        ${ORT_CLI_REPORT_ARGS}
+        ls -all $ORT_RESULTS_DIR
+    - name: Remove current-result.yml file
+      shell: bash
+      run: |
+        [[ -f "$ORT_RESULTS_CURRENT_FILE" ]] && \
+          rm -f $ORT_RESULTS_CURRENT_FILE || \
+          echo -e "\e[1;31m $ORT_RESULTS_CURRENT_FILE missing."
+    - name: Upload ORT results
+      uses: actions/upload-artifact@v3
+      if: contains(inputs.run, 'upload-results')
+      with:
+        name: ort-results
+        path: /home/runner/.ort/ort-results/
+        if-no-files-found: warn
+    - uses: actions/upload-artifact@v3
+      if: contains(inputs.run, 'upload-results')
+      with:
+        name: ort-web-app
+        path: /home/runner/.ort/ort-results/scan-report-web-app.html
+        if-no-files-found: warn
