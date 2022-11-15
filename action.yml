@@ -48,22 +48,6 @@ inputs:
       Set value to 'debug' to see additional debug output to help tracking down errors.
     required: false
     default: 'warn'
-  ort-yml-file:
-    description: |
-      Path to the .ort.yml (ORT code repository configuration file) relative to root of the repository.
-      By default set to '.ort.yml'.
-    required: false
-    default: ''
-  report-formats:
-    description: |
-      Comma-separated of ORT reporters to run.
-    required: false
-    default: CycloneDx,SpdxDocument,WebApp
-  run:
-    description: |
-      Comma-separated list of optional workflow steps to run.
-    required: false
-    default: 'cache-dependencies, analyzer,scanner,evaluator,advisor,reporter,upload-results'
   ort-cli-args:
     description: |
       List of arguments to pass to ORT CLI, applies to all commands.
@@ -90,12 +74,28 @@ inputs:
       List of arguments to pass to ORT Reporter CLI.
     required: false
     default: '-O SpdxDocument=output.file.formats=json,yaml'
+  ort-yml-file:
+    description: |
+      Path to the .ort.yml (ORT code repository configuration file) relative to root of the repository.
+      By default set to '.ort.yml'.
+    required: false
+    default: ''
   project-dir:
     description: |
       Path to directory within `github.workspace` to be analyzed/scanned with ORT.
       If empty, `github.workspace` directory is scanned.
     required: false
     default: ''
+  report-formats:
+    description: |
+      Comma-separated of ORT reporters to run.
+    required: false
+    default: CycloneDx,SpdxDocument,WebApp
+  run:
+    description: |
+      Comma-separated list of optional workflow steps to run.
+    required: false
+    default: 'cache-dependencies, analyzer,scanner,evaluator,advisor,reporter,upload-results'
   sw-name:
     description: |
       Name of project, product or component to be scanned.
