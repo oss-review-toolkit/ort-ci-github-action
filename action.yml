@@ -85,6 +85,16 @@ inputs:
       If set, the '.ort.yml' file from the repository is ignored.
     required: false
     default: ''
+  ort-config-vcs-url:
+    description: |
+      URL to ORT configuration repository to use.
+    required: false
+    default: 'https://github.com/oss-review-toolkit/ort-config.git'
+  ort-config-vcs-revision:
+    description: |
+      The Git revision of the ORT configuration repository to use.
+      By default set to 'main'.
+    required: false
   project-dir:
     description: |
       Path to directory within `github.workspace` to be analyzed/scanned with ORT.
@@ -183,15 +193,17 @@ runs:
         printenv >> "$GITHUB_ENV"
     - name: Shallow clone ort-config repository
       shell: bash
+      env:
+        ORT_CONFIG_VCS_URL: ${{ inputs.ort-config-vcs-url }}
+        ORT_CONFIG_VCS_REVISION: ${{ inputs.ort-config-vcs-revision }}
       if: ${{ env.ORT_CONFIG_DIR_IS_EMPTY }}
       run: |
-        ORT_CONFIG_VCS_URL="https://github.com/oss-review-toolkit/ort-config.git"
-        echo "ORT_CONFIG_VCS_URL=${ORT_CONFIG_VCS_URL}" >> "$GITHUB_ENV"
+        # Using bash instead of actions/checkout as we need to capture Git revision of ort-config
+        ORT_CONFIG_VCS_REVISION=${ORT_CONFIG_VCS_REVISION:-$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')}
         echo -e "\e[1;33m Retrieving ORT config ORT from ${ORT_CONFIG_VCS_URL}... "
         cd $ORT_CONFIG_DIR
         git init -q
         git remote add origin $ORT_CONFIG_VCS_URL
-        ORT_CONFIG_VCS_REVISION=${ORT_CONFIG_REVISION:-$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')}
         git fetch -q --depth 1 origin $ORT_CONFIG_REVISION
         git checkout -q FETCH_HEAD
         ls -all $ORT_CONFIG_DIR
@@ -199,10 +211,8 @@ runs:
       shell: bash
       run: |
         cd $ORT_CONFIG_DIR
-        ORT_CONFIG_VCS_URL=$(git rev-parse HEAD)
-        ORT_CONFIG_VCS_REVISION=$(git config remote.origin.url)
-        echo "ORT_CONFIG_VCS_URL=${ORT_CONFIG_VCS_URL}" >> "$GITHUB_ENV"
-        echo "ORT_CONFIG_VCS_REVISION=${ORT_CONFIG_VCS_REVISION}" >> "$GITHUB_ENV"
+        export ORT_CONFIG_VCS_URL=$(git config remote.origin.url)
+        export ORT_CONFIG_VCS_REVISION=$(git rev-parse HEAD)
         echo "ORT_CONFIG_VCS_URL: ${ORT_CONFIG_VCS_URL}"
         echo "ORT_CONFIG_VCS_REVISION: ${ORT_CONFIG_VCS_REVISION}"
     - name: ORT Analyzer
@@ -341,6 +351,9 @@ runs:
       if: contains(inputs.run, 'reporter')
       run: |
         echo -e "\e[1;33m Running ORT Reporter... "
+        if [[ ! -z "${ORT_REPO_CONFIG_FILE}" ]]; then
+          ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} --repository-configuration-file=${ORT_REPO_CONFIG_FILE} -l ORT_YML_FILE=${ORT_REPO_CONFIG_FILE}"
+        fi
         docker run \
         --mount type=bind,source=${{ github.workspace }}/,target=/workspace \
         --mount type=bind,source=/etc/group,target=/etc/group,readonly \
