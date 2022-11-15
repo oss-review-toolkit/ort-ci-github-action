@@ -171,9 +171,6 @@ runs:
         ORT_RUN_COMMANDS: ${{ inputs.run }}
       run: |
         echo -e "\e[1;33m Initializing ORT in GitHub workspace... "
-        echo " - image: '${ORT_DOCKER_IMAGE}' "
-        echo " - log-level: '${ORT_LOG_LEVEL}' "
-        echo " - run: '${ORT_RUN_COMMANDS}' "
         [[ -d $HOME/.ort/cache/ ]] || mkdir -p $HOME/.ort/cache/
         [[ -d $HOME/.ort/config/ ]] || mkdir -p $HOME/.ort/config/
         [[ -d $HOME/.ort/ort-results/ ]] || mkdir $HOME/.ort/ort-results/
