@@ -37,6 +37,11 @@ inputs:
       Set to 'true' only if an archive of source code for configured packages is to be created.
     required: false
     default: 'false'
+  docker-cli-args:
+    description: |
+      List of arguments to pass to Docker CLI.
+    required: false
+    default: '--user 1000'
   image:
     description: |
       URL for ORT Docker image to use.
@@ -149,6 +154,7 @@ runs:
         ORT_CLI_EVALUATE_ARGS: ${{ inputs.ort-cli-evaluate-args }}
         ORT_CLI_ADVISE_ARGS: ${{ inputs.ort-cli-advise-args }}
         ORT_CLI_REPORT_ARGS: ${{ inputs.ort-cli-report-args }}
+        ORT_DOCKER_CLI_ARGS: ${{ inputs.docker-cli-args }}
         ORT_DOCKER_IMAGE: ${{ inputs.image }}
         ORT_LOG_LEVEL: ${{ inputs.log-level }}
         ORT_REPO_CONFIG_FILE: ${{ inputs.ort-repo-config-file}}
@@ -239,7 +245,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
-        --user 1000 \
+        $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
         -P ort.analyzer.allowDynamicVersions=${ORT_ALLOW_DYNAMIC_VERSIONS} \
@@ -266,7 +272,7 @@ runs:
         # --mount type=bind,source=$HOME,target=$HOME \
         # -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         # -e ORT_DATA_DIR="${HOME}/.ort/" \
-        # --user 1000 \
+        # $ORT_DOCKER_CLI_ARGS \
         # $ORT_DOCKER_IMAGE \
         # --$ORT_LOG_LEVEL \
         # $ORT_CLI_ARGS \
@@ -291,7 +297,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
-        --user 1000 \
+        $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
         $ORT_CLI_ARGS \
@@ -324,7 +330,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
-        --user 1000 \
+        $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
         $ORT_CLI_ARGS \
@@ -353,7 +359,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
-        --user 1000 \
+        $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
         $ORT_CLI_ARGS \
