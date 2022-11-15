@@ -21,18 +21,6 @@ description: 'A GitHub Action to run ORT'
 author: 'The ORT Project Authors'
 
 inputs:
-  image:
-    description: |
-      URL for ORT Docker image to use.
-    required: false
-    # TODO: update to Docker container when it is available
-    default: 'ghcr.io/alliander-opensource/ort-container-pr-6053:latest'
-  project-dir:
-    description: |
-      Path to directory within `github.workspace` to be analyzed/scanned with ORT.
-      If empty, `github.workspace` directory is scanned.
-    required: false
-    default: ''
   advisors:
     description: |
       Comma-separated list of security vulnerability advisors to use.
@@ -49,6 +37,12 @@ inputs:
       Set to 'true' only if an archive of source code for configured packages is to be created.
     required: false
     default: 'false'
+  image:
+    description: |
+      URL for ORT Docker image to use.
+    required: false
+    # TODO: update to Docker container when it is available
+    default: 'ghcr.io/alliander-opensource/ort-container-pr-6053:latest'
   log-level:
     description: |
       Set value to 'debug' to see additional debug output to help tracking down errors.
@@ -96,6 +90,12 @@ inputs:
       List of arguments to pass to ORT Reporter CLI.
     required: false
     default: '-O SpdxDocument=output.file.formats=json,yaml'
+  project-dir:
+    description: |
+      Path to directory within `github.workspace` to be analyzed/scanned with ORT.
+      If empty, `github.workspace` directory is scanned.
+    required: false
+    default: ''
   sw-name:
     description: |
       Name of project, product or component to be scanned.
