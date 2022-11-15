@@ -380,10 +380,5 @@ runs:
       if: contains(inputs.run, 'upload-results')
       with:
         name: ort-results
-        path: /home/runner/.ort/ort-results/
-    - uses: actions/upload-artifact@v3
-      if: contains(inputs.run, 'upload-results')
-      with:
-        name: ort-web-app
-        path: /home/runner/.ort/ort-results/scan-report-web-app.html
+        path: ${{ env.HOME }}/.ort/ort-results/
         if-no-files-found: warn
