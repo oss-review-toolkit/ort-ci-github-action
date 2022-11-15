@@ -2,6 +2,8 @@
 
 ## Usage
 
+Please check the [action.yml](action.yml] for the parameters in greater detail.
+
 ```yaml
 - uses: oss-review-toolkit/ort-ci-github-action@main
   with:
@@ -13,46 +15,6 @@
 
     # Comma separated list of ORT tools to run.
     run: 'advisor,downloader,evaluator'
-
-    # Name of ORT configuration dir.
-    config-dir: 'ort-config'
-
-    # Path to repository configuration file.
-    config-file: '.ort.yml'
-
-    # Path to general ORT configuration file.
-    cli-config-file: 'conf.yml'
-
-    # Path to a general ORT configuration file.
-    cli-config-template: './templates/ort.conf.tmpl'
-
-    # Reasons to fail with an non-zero exit code.
-    fail-on: 'issue, violations, advisories, outdat-notice-file'
-
-    # Connection to PostgreSQL storage backend.
-    db-url: ''
-    db-username: ${{ secrets.DB_USER }}
-    db-password: ${{ secrets.DB_PASSWORD }}
-
-    # If 'true', a file archive with the sources for project and/or its
-    # dependencies is created. Used for license compliance and data
-    # retention/business continuity
-    create-source-code-bundle: false
-
-    # Path to open source attribution document.
-    notice-file-name: 'NOTICE'
-
-    # Set to 'true' only if dynamic dependency versions are allowed (note
-    # version ranges specified for dependencies may cause unstable results).
-    # Applies only to package managers that support lock files, e.g. NPM
-    allow-dynamic-versions: false
-
-    # Log level: 'debug' to see additional debug output to help tracking down
-    # errors. 'performance' for less logs. 'info' as default.
-    log-level: 'info'
-
-    # Extra JVM environment options when running ORT
-    opts: ''
 
     # Comma separated list of types of ORT reports to generate.
     report-formats: 'CycloneDx,EvaluatedModel,GitLabLicenseModel,NoticeTemplate,SpdxDocument,StaticHtml,WebApp'
