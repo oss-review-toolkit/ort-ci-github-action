@@ -369,19 +369,18 @@ runs:
         -O SpdxDocument=document.name="${SW_NAME}" \
         ${ORT_CLI_REPORT_ARGS}
         ls -all $ORT_RESULTS_DIR
-    - name: Remove current-result.yml file
+    - name: Remove current-result.yml file if present
       shell: bash
       run: |
-        [[ -f "$ORT_RESULTS_CURRENT_FILE" ]] && \
-          rm -f $ORT_RESULTS_CURRENT_FILE || \
-          echo -e "\e[1;31m $ORT_RESULTS_CURRENT_FILE missing."
+        if [[ -f "$ORT_RESULTS_CURRENT_FILE" ]]; then
+            rm -f $ORT_RESULTS_CURRENT_FILE
+        fi
     - name: Upload ORT results
       uses: actions/upload-artifact@v3
       if: contains(inputs.run, 'upload-results')
       with:
         name: ort-results
         path: /home/runner/.ort/ort-results/
-        if-no-files-found: warn
     - uses: actions/upload-artifact@v3
       if: contains(inputs.run, 'upload-results')
       with:
