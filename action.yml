@@ -74,10 +74,10 @@ inputs:
       List of arguments to pass to ORT Reporter CLI.
     required: false
     default: '-O SpdxDocument=output.file.formats=json,yaml'
-  ort-yml-file:
+  ort-repo-config-file:
     description: |
-      Path to the .ort.yml (ORT code repository configuration file) relative to root of the repository.
-      By default set to '.ort.yml'.
+      Path to file containing the repository configuration.
+      If set, the '.ort.yml' file from the repository is ignored.
     required: false
     default: ''
   project-dir:
@@ -151,6 +151,7 @@ runs:
         ORT_CLI_REPORT_ARGS: ${{ inputs.ort-cli-report-args }}
         ORT_DOCKER_IMAGE: ${{ inputs.image }}
         ORT_LOG_LEVEL: ${{ inputs.log-level }}
+        ORT_REPO_CONFIG_FILE: ${{ inputs.ort-repo-config-file}}
         ORT_RUN_COMMANDS: ${{ inputs.run }}
       run: |
         echo -e "\e[1;33m Initializing ORT in GitHub workspace... "
@@ -216,7 +217,6 @@ runs:
       env:
         ORT_ALLOW_DYNAMIC_VERSIONS: ${{ inputs.allow-dynamic-versions }}
         ORT_PROJECT_DIR: ${{ inputs.project-dir }}
-        ORT_YML_FILE: ${{ inputs.ort-yml-file }}
       run: |
         echo -e "\e[1;33m Running ORT Analyzer... "
         if [[ ! -z "${ORT_ALLOW_DYNAMIC_VERSIONS}" ]]; then
@@ -228,8 +228,8 @@ runs:
         if [[ ! -z "${ORT_CONFIG_VCS_REVISION}" ]]; then
           ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} -l ORT_CONFIG_VCS_REVISION=${ORT_CONFIG_VCS_REVISION}"
         fi
-        if [[ ! -z "${ORT_YML}" ]]; then
-          ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} -l ORT_YML_FILE=${ORT_YML_FILE}"
+        if [[ ! -z "${ORT_REPO_CONFIG_FILE}" ]]; then
+          ORT_CLI_ANALYZE_ARGS="${ORT_CLI_ANALYZE_ARGS} --repository-configuration-file=${ORT_REPO_CONFIG_FILE} -l ORT_YML_FILE=${ORT_REPO_CONFIG_FILE}"
         fi
         echo "ORT_CLI_ANALYZE_ARGS: ${ORT_CLI_ANALYZE_ARGS}"
         docker run \
