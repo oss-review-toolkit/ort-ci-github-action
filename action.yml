@@ -169,29 +169,18 @@ runs:
         [[ -d $HOME/.ort/ort-results/ ]] || mkdir $HOME/.ort/ort-results/
         [[ -d $HOME/.ort/scanner/archive/ ]] || mkdir -p $HOME/.ort/scanner/archive/; chmod -R aug+w ${HOME}/.ort/
         chmod -R aug+w ${{ github.workspace }}/
-        echo "ORT_CLI_ARGS=${ORT_CLI_ARGS}" >> "$GITHUB_ENV"
-        echo "ORT_CLI_ANALYZE_ARGS=${ORT_CLI_ANALYZE_ARGS}" >> "$GITHUB_ENV"
-        echo "ORT_CLI_SCANARGS=${ORT_SCAN_CLI_ARGS}" >> "$GITHUB_ENV"
-        echo "ORT_CLI_EVALUATE_ARGS=${ORT_CLI_EVALUATE_ARGS}" >> "$GITHUB_ENV"
-        echo "ORT_CLI_ADVISE_ARGS=${ORT_CLI_ADVISE_ARGS}" >> "$GITHUB_ENV"
-        echo "ORT_CLI_REPORT_ARGS=${ORT_CLI_REPORT_ARGS}" >> "$GITHUB_ENV"
-        export ORT_CONFIG_DIR=${HOME}/.ort/config
-        echo "ORT_CONFIG_DIR=${ORT_CONFIG_DIR}" >> "$GITHUB_ENV"
-        [[ -z "$(ls -A ${ORT_CONFIG_DIR})" ]] && ORT_CONFIG_DIR_IS_EMPTY=true || ORT_CONFIG_DIR_IS_EMPTY=false
-        echo "ORT_CONFIG_DIR_IS_EMPTY=${ORT_CONFIG_DIR_IS_EMPTY}" >> "$GITHUB_ENV"
-        echo "ORT_DOCKER_IMAGE=${ORT_DOCKER_IMAGE}" >> "$GITHUB_ENV"
-        echo "ORT_LOG_LEVEL=${ORT_LOG_LEVEL}" >> "$GITHUB_ENV"
-        echo "ORT_RUN_COMMANDS=${ORT_RUN_COMMANDS}" >> "$GITHUB_ENV"
-        export ORT_RESULTS_DIR=${HOME}/.ort/ort-results
-        echo "ORT_RESULTS_DIR=${ORT_RESULTS_DIR}" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_ADVISOR_FILE=${ORT_RESULTS_DIR}/advisor-result.json" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_ANALYZER_FILE=${ORT_RESULTS_DIR}/analyzer-result.json" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_CURRENT_FILE=${ORT_RESULTS_DIR}/current-result.json" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_EVALUATED_MODEL_FILE=${ORT_RESULTS_DIR}/evaluated-model.json" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_EVALUATOR_FILE=${ORT_RESULTS_DIR}/evaluation-result.json" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_HTML_REPORT_FILE=${ORT_RESULTS_DIR}/ort-results/scan-report.html" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_SCANNER_FILE=${ORT_RESULTS_DIR}/scanner-result.json" >> "$GITHUB_ENV"
-        echo "ORT_RESULTS_WEB_APP_FILE=${ORT_RESULTS_DIR}/scan-report-web-app.html" >> "$GITHUB_ENV"
+        export ORT_CONFIG_DIR="${HOME}/.ort/config"
+        [[ -z "$(ls -A ${ORT_CONFIG_DIR})" ]] && export ORT_CONFIG_DIR_IS_EMPTY=true || export ORT_CONFIG_DIR_IS_EMPTY=false
+        export ORT_RESULTS_DIR="${HOME}/.ort/ort-results"
+        export ORT_RESULTS_ADVISOR_FILE="${ORT_RESULTS_DIR}/advisor-result.json"
+        export ORT_RESULTS_ANALYZER_FILE="${ORT_RESULTS_DIR}/analyzer-result.json"
+        export ORT_RESULTS_CURRENT_FILE="${ORT_RESULTS_DIR}/current-result.json"
+        export ORT_RESULTS_EVALUATED_MODEL_FILE="${ORT_RESULTS_DIR}/evaluated-model.json"
+        export ORT_RESULTS_EVALUATOR_FILE="${ORT_RESULTS_DIR}/evaluation-result.json"
+        export ORT_RESULTS_HTML_REPORT_FILE="${ORT_RESULTS_DIR}/ort-results/scan-report.html"
+        export ORT_RESULTS_SCANNER_FILE="${ORT_RESULTS_DIR}/scanner-result.json"
+        export ORT_RESULTS_WEB_APP_FILE="${ORT_RESULTS_DIR}/scan-report-web-app.html"
+        printenv >> "$GITHUB_ENV"
     - name: Shallow clone ort-config repository
       shell: bash
       if: ${{ env.ORT_CONFIG_DIR_IS_EMPTY }}
