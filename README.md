@@ -2,7 +2,7 @@
 
 ## Usage
 
-Please check the [action.yml](action.yml] for the parameters in greater detail.
+Please check the [action.yml](action.yml) for the parameters in greater detail.
 
 ```yaml
 - uses: oss-review-toolkit/ort-ci-github-action@main
