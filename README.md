@@ -29,7 +29,7 @@ Please check the [action.yml](action.yml) for the parameters in greater detail.
 Examples of how to use this step in a workflow.
 
 ```yaml
-job:
+jobs:
   ort:
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +43,32 @@ job:
       - uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           sw-name: 'My Project'
+```
+
+### Scanning multiple repositories
+
+There are many ways to scan multiple repositories.
+One option is to scan them from a single GitHub repository using a matrix.
+This can work well for a smaller amount of repositories to scan.
+
+```yaml
+jobs:
+  ort:
+    strategy:
+      matrix:
+        include:
+          - repository: myorg/alpha
+            sw-name: alpha
+          - repository: myorg/beta
+            sw-name: beta
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ matrix.repository }}
+      - uses: oss-review-toolkit/ort-ci-github-action@main
+        with:
+          sw-name: ${{ matrix.sw-name }}
 ```
 
 ## Development
