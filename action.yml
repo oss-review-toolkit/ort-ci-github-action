@@ -46,8 +46,7 @@ inputs:
     description: |
       URL for ORT Docker image to use.
     required: false
-    # TODO: update to Docker container when it is available
-    default: 'ghcr.io/alliander-opensource/ort-container-pr-6053:latest'
+    default: 'ghcr.io/alliander-opensource/ort-container:latest'
   log-level:
     description: |
       Set value to 'debug' to see additional debug output to help tracking down errors.
