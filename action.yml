@@ -121,6 +121,7 @@ inputs:
       Project version number or release name (use the version from package metadata, not VCS revision).
       By default, the Git short SHA is used.
     required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -168,6 +169,8 @@ runs:
         ORT_LOG_LEVEL: ${{ inputs.log-level }}
         ORT_REPO_CONFIG_FILE: ${{ inputs.ort-repo-config-file}}
         ORT_RUN_COMMANDS: ${{ inputs.run }}
+        ORT_SW_NAME: ${{ inputs.sw-name }}
+        ORT_SW_VERSION: ${{ inputs.sw-version }}
       run: |
         echo -e "\e[1;33m Initializing ORT in GitHub workspace... "
         [[ -d $HOME/.ort/cache/ ]] || mkdir -p $HOME/.ort/cache/
@@ -186,6 +189,8 @@ runs:
         export ORT_RESULTS_HTML_REPORT_FILE="${ORT_RESULTS_DIR}/ort-results/scan-report.html"
         export ORT_RESULTS_SCANNER_FILE="${ORT_RESULTS_DIR}/scanner-result.json"
         export ORT_RESULTS_WEB_APP_FILE="${ORT_RESULTS_DIR}/scan-report-web-app.html"
+        [[ -n "${ORT_SW_NAME}" ]] && export ORT_RESULTS_NAME="ort-results-${ORT_SW_NAME}" || export ORT_RESULTS_NAME="ort-results"
+        [[ -n "${ORT_SW_VERSION}" ]] && export ORT_RESULTS_NAME="${ORT_RESULTS_NAME}-${ORT_SW_VERSION}"
         printenv >> "$GITHUB_ENV"
     - name: Shallow clone ort-config repository
       shell: bash
@@ -378,6 +383,6 @@ runs:
       uses: actions/upload-artifact@v3
       if: contains(inputs.run, 'upload-results')
       with:
-        name: ort-results
+        name: ${{ env.ORT_RESULTS_NAME }}
         path: ${{ env.HOME }}/.ort/ort-results/
         if-no-files-found: warn
