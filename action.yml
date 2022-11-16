@@ -121,6 +121,7 @@ inputs:
       Project version number or release name (use the version from package metadata, not VCS revision).
       By default, the Git short SHA is used.
     required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -378,6 +379,6 @@ runs:
       uses: actions/upload-artifact@v3
       if: contains(inputs.run, 'upload-results')
       with:
-        name: ort-results
+        name: ${{ join(['ort-results', inputs.sw-name, inputs.sw-version ], '-') }}
         path: ${{ env.HOME }}/.ort/ort-results/
         if-no-files-found: warn
