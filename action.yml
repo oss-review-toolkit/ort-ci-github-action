@@ -245,6 +245,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
+        -e GRADLE_USER_HOME="${HOME}/.gradle" \
         $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
@@ -272,6 +273,7 @@ runs:
         # --mount type=bind,source=$HOME,target=$HOME \
         # -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         # -e ORT_DATA_DIR="${HOME}/.ort/" \
+        # -e GRADLE_USER_HOME="${HOME}/.gradle" \
         # $ORT_DOCKER_CLI_ARGS \
         # $ORT_DOCKER_IMAGE \
         # --$ORT_LOG_LEVEL \
@@ -297,6 +299,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
+        -e GRADLE_USER_HOME="${HOME}/.gradle" \
         $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
@@ -330,6 +333,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
+        -e GRADLE_USER_HOME="${HOME}/.gradle" \
         $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
@@ -362,6 +366,7 @@ runs:
         --mount type=bind,source=$HOME,target=$HOME \
         -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
         -e ORT_DATA_DIR="${HOME}/.ort/" \
+        -e GRADLE_USER_HOME="${HOME}/.gradle" \
         $ORT_DOCKER_CLI_ARGS \
         $ORT_DOCKER_IMAGE \
         --$ORT_LOG_LEVEL \
