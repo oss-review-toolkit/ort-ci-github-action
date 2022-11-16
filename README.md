@@ -55,6 +55,7 @@ This can work well for a smaller amount of repositories to scan.
 jobs:
   ort:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - repository: myorg/alpha
