@@ -177,6 +177,7 @@ runs:
         [[ -d $HOME/.ort/config/ ]] || mkdir -p $HOME/.ort/config/
         [[ -d $HOME/.ort/ort-results/ ]] || mkdir $HOME/.ort/ort-results/
         [[ -d $HOME/.ort/scanner/archive/ ]] || mkdir -p $HOME/.ort/scanner/archive/; chmod -R aug+w ${HOME}/.ort/
+        [[ -d $HOME/.gradle/ ]] || mkdir -p $HOME/.gradle/; chmod -R aug+w ${HOME}/.gradle/
         chmod -R aug+w ${{ github.workspace }}/
         export ORT_CONFIG_DIR="${HOME}/.ort/config"
         [[ -z "$(ls -A ${ORT_CONFIG_DIR})" ]] && export ORT_CONFIG_DIR_IS_EMPTY=true || export ORT_CONFIG_DIR_IS_EMPTY=false
