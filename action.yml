@@ -106,7 +106,7 @@ inputs:
       API token for HTTP file server used for caching scan-results and storing file archives.
     required: false
   image:
-    default: 'ghcr.io/tsteenbe/ort-container-pr-6225:ort-sha-7aca98e'
+    default: 'ghcr.io/tsteenbe/ort-container:date-20230212'
     description: |
       URL for ORT Docker image to use.
     required: false
