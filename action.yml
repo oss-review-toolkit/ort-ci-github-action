@@ -116,7 +116,7 @@ inputs:
       Set value to 'debug' to see additional debug output to help tracking down errors.
     required: false
   ort-cli-args:
-    default: '--force-overwrite --stacktrace'
+    default: '-P ort.forceOverwrite=true --stacktrace'
     description: |
       List of arguments to pass to ORT CLI, applies to all commands.
     required: false
