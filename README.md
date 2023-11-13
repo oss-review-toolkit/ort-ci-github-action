@@ -323,7 +323,7 @@ jobs:
 
 All contributions are welcome. If you are interested in contributing, please read our
 [contributing guide][ort-contributing-md], and to get quick answers
-to any of your questions we recommend you [join our Slack community][ort-join-slack].
+to any of your questions we recommend you [join our Slack community][ort-slack].
 
 # License
 
@@ -339,5 +339,5 @@ OSS Review Toolkit (ORT) is a [Linux Foundation project][lf] and part of [ACT][a
 [ort]: https://github.com/oss-review-toolkit/ort
 [ort-config-yml]: https://github.com/oss-review-toolkit/ort/blob/main/model/src/main/resources/reference.yml
 [ort-contributing-md]: https://github.com/oss-review-toolkit/.github/blob/main/CONTRIBUTING.md
-[ort-join-slack]: https://join.slack.com/t/ort-talk/shared_invite/zt-1c7yi4sj6-mk7R1fAa6ZdW5MQ6DfAVRg
+[ort-slack]: http://slack.oss-review-toolkit.org
 [lf]: https://www.linuxfoundation.org
