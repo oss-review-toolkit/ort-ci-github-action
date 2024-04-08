@@ -65,7 +65,7 @@ jobs:
         uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
           allow-dynamic-versions: 'true'
-          ort-cli-analyze-args: '-P ort.analyzer.enabledPackageManagers=NPM,Yarn,Yarn2'
+          ort-cli-args: '-P ort.analyzer.enabledPackageManagers=NPM,Yarn,Yarn2'
 ```
 
 #### Run ORT with labels
