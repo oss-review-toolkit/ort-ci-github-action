@@ -329,7 +329,7 @@ runs:
         printenv >> "$GITHUB_ENV"
     - name: Cache dependencies
       id: cache-dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       if: contains(inputs.run, 'cache-dependencies') && startsWith(runner.os, 'Linux')
       with:
         path: |
@@ -357,7 +357,7 @@ runs:
         key: ${{ runner.os }}-ort-deps-cache
     - name: Cache ORT scan results
       id: cache-scan-results
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       if: contains(inputs.run, 'cache-scan-results') && startsWith(runner.os, 'Linux')
       with:
         path: '${{ env.HOME}}/${{ env.ORT_HOME_PATH }}/scanner/'
@@ -543,28 +543,28 @@ runs:
             rm -f $ORT_RESULTS_CURRENT_PATH
         fi
     - name: Upload ORT results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: contains(inputs.run, 'upload-results')
       with:
         name: ${{ env.ORT_RESULTS_ARTIFACT_NAME }}
         path: ${{ env.ORT_RESULTS_PATH }}
         if-no-files-found: warn
     - name: Upload ORT advisor-result.json
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: contains(inputs.run, 'upload-advisor-result')
       with:
         name: "${{ env.ORT_RESULTS_ARTIFACT_NAME }}-advisor-result.json.zip"
         path: ${{ env.ORT_RESULTS_ADVISOR_PATH }}
         if-no-files-found: warn
     - name: Upload ORT evaluation-result.json
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: contains(inputs.run, 'upload-evaluation-result')
       with:
         name: "${{ env.ORT_RESULTS_ARTIFACT_NAME }}-evaluation-result.json.zip"
         path: ${{ env.ORT_RESULTS_EVALUATE_PATH }}
         if-no-files-found: warn
     - name: Upload ORT scan-result.json
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: contains(inputs.run, 'upload-scan-result')
       with:
         name: "${{ env.ORT_RESULTS_ARTIFACT_NAME }}-scan-result.json.zip"
