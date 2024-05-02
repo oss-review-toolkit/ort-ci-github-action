@@ -141,7 +141,7 @@ inputs:
       List of arguments to pass to ORT Advisor CLI.
     required: false
   ort-cli-report-args:
-    default: '-O SpdxDocument=output.file.formats=json,yaml'
+    default: '-O CycloneDX=output.file.formats=json,xml -O SpdxDocument=output.file.formats=json,yaml'
     description: |
       List of arguments to pass to ORT Reporter CLI.
     required: false
