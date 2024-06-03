@@ -454,32 +454,6 @@ runs:
         [[ -f $ORT_RESULTS_SCANNER_PATH ]] && \
           ln -frs $ORT_RESULTS_SCANNER_PATH $ORT_RESULTS_CURRENT_PATH || \
           echo -e "\e[1;31m File $ORT_RESULTS_SCANNER_PATH not found."
-    - name: Run ORT Evaluator
-      id: ort-evaluator
-      shell: bash
-      if: contains(inputs.run, 'evaluator')
-      run: |
-        echo -e "\e[1;33m Running ORT Evaluator... "
-        docker run \
-        --mount type=bind,source=$HOME,target=/home/ort \
-        -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
-        -e ORT_DATA_DIR="/home/ort/${ORT_HOME_PATH}" \
-        -u $(id -u):$(id -g) \
-        $ORT_DOCKER_CLI_ARGS \
-        $ORT_DOCKER_IMAGE \
-        --$ORT_LOG_LEVEL \
-        $ORT_CLI_ARGS \
-        evaluate \
-        -i ${ORT_RESULTS_CURRENT_PATH/$USER/ort} \
-        -o ${ORT_RESULTS_PATH/$USER/ort} \
-        -f JSON \
-        ${ORT_CLI_EVALUATE_ARGS} || ORT_CLI_EVALUATE_EXIT_CODE=$? \
-        && export ORT_CLI_EVALUATE_EXIT_CODE="${ORT_CLI_EVALUATE_EXIT_CODE:-0}" \
-        && printenv >> "$GITHUB_ENV"
-        [[ -f $ORT_RESULTS_EVALUATOR_PATH ]] && \
-          ln -frs $ORT_RESULTS_EVALUATOR_PATH $ORT_RESULTS_CURRENT_PATH || \
-          echo -e "\e[1;31m File $ORT_RESULTS_EVALUATOR_PATH not found."
-        [[ $ORT_CLI_EVALUATE_EXIT_CODE -ne 2 ]] && exit ${ORT_CLI_EVALUATE_EXIT_CODE} || exit 0
     - name: Run ORT Advisor
       id: ort-advisor
       shell: bash
@@ -509,6 +483,32 @@ runs:
           ln -frs $ORT_RESULTS_ADVISOR_PATH $ORT_RESULTS_CURRENT_PATH || \
           echo -e "\e[1;31m File $ORT_RESULTS_ADVISOR_PATH not found."
         [[ $ORT_CLI_ADVISE_EXIT_CODE -ne 2 ]] && exit ${ORT_CLI_ADVISE_EXIT_CODE} || exit 0
+    - name: Run ORT Evaluator
+      id: ort-evaluator
+      shell: bash
+      if: contains(inputs.run, 'evaluator')
+      run: |
+        echo -e "\e[1;33m Running ORT Evaluator... "
+        docker run \
+        --mount type=bind,source=$HOME,target=/home/ort \
+        -e JDK_JAVA_OPTIONS="--illegal-access=warn -Xmx5120m" \
+        -e ORT_DATA_DIR="/home/ort/${ORT_HOME_PATH}" \
+        -u $(id -u):$(id -g) \
+        $ORT_DOCKER_CLI_ARGS \
+        $ORT_DOCKER_IMAGE \
+        --$ORT_LOG_LEVEL \
+        $ORT_CLI_ARGS \
+        evaluate \
+        -i ${ORT_RESULTS_CURRENT_PATH/$USER/ort} \
+        -o ${ORT_RESULTS_PATH/$USER/ort} \
+        -f JSON \
+        ${ORT_CLI_EVALUATE_ARGS} || ORT_CLI_EVALUATE_EXIT_CODE=$? \
+        && export ORT_CLI_EVALUATE_EXIT_CODE="${ORT_CLI_EVALUATE_EXIT_CODE:-0}" \
+        && printenv >> "$GITHUB_ENV"
+        [[ -f $ORT_RESULTS_EVALUATOR_PATH ]] && \
+          ln -frs $ORT_RESULTS_EVALUATOR_PATH $ORT_RESULTS_CURRENT_PATH || \
+          echo -e "\e[1;31m File $ORT_RESULTS_EVALUATOR_PATH not found."
+        [[ $ORT_CLI_EVALUATE_EXIT_CODE -ne 2 ]] && exit ${ORT_CLI_EVALUATE_EXIT_CODE} || exit 0
     - name: Run ORT Reporter
       id: ort-reporter
       shell: bash
