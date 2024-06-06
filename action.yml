@@ -331,6 +331,8 @@ runs:
       id: cache-dependencies
       uses: actions/cache@v4
       if: contains(inputs.run, 'cache-dependencies') && startsWith(runner.os, 'Linux')
+      env:
+        ORT_HOME_PATH: ${{ inputs.ort-home-path }}
       with:
         path: |
           ~/.cabal/packages
@@ -354,6 +356,7 @@ runs:
           ~/.sbt
           ~/.stack-work
           ~/go/pkg/mod
+          $HOME/$ORT_HOME_PATH/cache
         key: ${{ runner.os }}-ort-deps-cache
     - name: Cache ORT scan results
       id: cache-scan-results
