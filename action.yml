@@ -429,7 +429,7 @@ runs:
       if: contains(inputs.run, 'scanner')
       run: |
         echo -e "\e[1;33m Running ORT Scanner... "
-        eval "$(ssh-agent -s)" \
+        eval "$(ssh-agent -s)"
         docker run \
         --mount type=bind,source=$HOME,target=/home/ort \
         --mount type=tmpfs,target=/tmp \
