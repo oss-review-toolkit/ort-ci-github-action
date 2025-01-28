@@ -207,6 +207,44 @@ inputs:
       By default, the Git short SHA is used.
     required: false
 
+outputs:
+  evaluator-exit-code:
+    description: The exit code of the evaluator CLI command.
+    value: "${{ steps.ort-evaluator.outputs.exit-code }}"
+  advisor-exit-code:
+    description: The exit code of the advisor CLI command.
+    value: "${{ steps.ort-advisor.outputs.exit-code }}"
+  results-path:
+    description: Path to the result directory.
+    value: "${{ steps.ort-init.outputs.results-path }}"
+  results-advisor-path:
+    description: Path to the advisor result file.
+    value: "${{ steps.ort-init.outputs.results-advisor-path }}"
+  results-evaluator-path:
+    description: Path to the evaluator result file.
+    value: "${{ steps.ort-init.outputs.results-evaluator-path }}"
+  results-scanner-path:
+    description: Path to the scanner result file.
+    value: "${{ steps.ort-init.outputs.results-scanner-path }}"
+  results-html-report-path:
+    description: Path to the HTML report file.
+    value: "${{ steps.ort-init.outputs.results-html-report-path }}"
+  results-sbom-cyclonedx-xml-path:
+    description: Path to the CycloneDX XML SBoM file.
+    value: "${{ steps.ort-init.outputs.results-sbom-cyclonedx-xml-path }}"
+  results-sbom-cyclonedx-json-path:
+    description: Path to the CycloneDX JSON SBoM file.
+    value: "${{ steps.ort-init.outputs.results-sbom-cyclonedx-json-path }}"
+  results-sbom-spdx-json-path:
+    description: Path to the SPDX JSON SBoM file.
+    value: "${{ steps.ort-init.outputs.results-sbom-spdx-json-path }}"
+  results-sbom-spdx-yml-path:
+    description: Path to the SPDX YML SBoM file.
+    value: "${{ steps.ort-init.outputs.results-sbom-spdx-yml-path }}"
+  results-web-app-path:
+    description: Path to the Web App Report file.
+    value: "${{ steps.ort-init.outputs.results-web-app-path }}"
+
 runs:
   using: 'composite'
   steps:
@@ -247,17 +285,29 @@ runs:
         mkdir -p $HOME/go/; chmod -R aug+w ${HOME}/go/ || :
         export ORT_CONFIG_PATH=${ORT_CONFIG_PATH:-"$HOME/$ORT_HOME_PATH/config"}
         export ORT_RESULTS_PATH="$HOME/$ORT_HOME_PATH/ort-results"
+        echo "results-path=${ORT_RESULTS_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_ADVISOR_PATH="${ORT_RESULTS_PATH}/advisor-result.json"
+        echo "results-advisor-path=${ORT_RESULTS_ADVISOR_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_ANALYZER_PATH="${ORT_RESULTS_PATH}/analyzer-result.json"
+        echo "results-analyzer-path=${ORT_RESULTS_ANALYZER_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_CURRENT_PATH="${ORT_RESULTS_PATH}/current-result.json"
         export ORT_RESULTS_EVALUATED_MODEL_PATH="${ORT_RESULTS_PATH}/evaluated-model.json"
         export ORT_RESULTS_EVALUATOR_PATH="${ORT_RESULTS_PATH}/evaluation-result.json"
-        export ORT_RESULTS_HTML_REPORT_PATH="${ORT_RESULTS_PATH}/ort-results/scan-report.html"
+        echo "results-evaluator-path=${ORT_RESULTS_EVALUATOR_PATH}" >> "$GITHUB_OUTPUT"
+        export ORT_RESULTS_HTML_REPORT_PATH="${ORT_RESULTS_HTML_REPORT_PATH}/ort-results/scan-report.html"
+        echo "results-html-report-path=${ORT_RESULTS_SCANNER_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_SCANNER_PATH="${ORT_RESULTS_PATH}/scan-result.json"
+        echo "results-scanner-path=${ORT_RESULTS_SCANNER_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_SBOM_CYCLONE_XML_PATH="${ORT_RESULTS_PATH}/bom.cyclonedx.xml"
+        echo "results-sbom-cyclonedx-xml-path=${ORT_RESULTS_SBOM_CYCLONE_XML_PATH}" >> "$GITHUB_OUTPUT"
+        export ORT_RESULTS_SBOM_CYCLONE_JSON_PATH="${ORT_RESULTS_PATH}/bom.cyclonedx.json"
+        echo "results-sbom-cyclonedx-json-path=${ORT_RESULTS_SBOM_CYCLONE_JSON_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_SBOM_SPDX_JSON_PATH="${ORT_RESULTS_PATH}/bom.spdx.json"
+        echo "results-sbom-spdx-json-path=${ORT_RESULTS_SBOM_SPDX_JSON_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_SBOM_SPDX_YML_PATH="${ORT_RESULTS_PATH}/bom.spdx.yml"
+        echo "results-sbom-spdx-yml-path=${ORT_RESULTS_SBOM_SPDX_YML_PATH}" >> "$GITHUB_OUTPUT"
         export ORT_RESULTS_WEB_APP_PATH="${ORT_RESULTS_PATH}/scan-report-web-app.html"
+        echo "results-web-app-path=${ORT_RESULTS_WEB_APP_PATH}" >> "$GITHUB_OUTPUT"
         SW_NAME=${SW_NAME:-"unknown"}
         SW_VERSION=${SW_VERSION:-"unknown"}
         [[ -d "$PROJECT_PATH/.git" && "$SW_NAME" = "unknown" ]] && SW_NAME=$(cd $PROJECT_PATH; basename -s .git `git config --get remote.origin.url`)
@@ -481,8 +531,8 @@ runs:
         -a $ORT_ADVISORS \
         -f JSON \
         ${ORT_CLI_ADVISE_ARGS} || ORT_CLI_ADVISE_EXIT_CODE=$? \
-        && export ORT_CLI_ADVISE_EXIT_CODE="${ORT_CLI_ADVISE_EXIT_CODE:-0}" \
-        && printenv >> "$GITHUB_ENV"
+        && ORT_CLI_ADVISE_EXIT_CODE="${ORT_CLI_ADVISE_EXIT_CODE:-0}" \
+        && echo "exit-code=${ORT_CLI_EVALUATE_EXIT_CODE}" >> "$GITHUB_OUTPUT"
         [[ -f $ORT_RESULTS_ADVISOR_PATH ]] && \
           ln -frs $ORT_RESULTS_ADVISOR_PATH $ORT_RESULTS_CURRENT_PATH || \
           echo -e "\e[1;31m File $ORT_RESULTS_ADVISOR_PATH not found."
@@ -507,8 +557,8 @@ runs:
         -o ${ORT_RESULTS_PATH/$USER/ort} \
         -f JSON \
         ${ORT_CLI_EVALUATE_ARGS} || ORT_CLI_EVALUATE_EXIT_CODE=$? \
-        && export ORT_CLI_EVALUATE_EXIT_CODE="${ORT_CLI_EVALUATE_EXIT_CODE:-0}" \
-        && printenv >> "$GITHUB_ENV"
+        && ORT_CLI_EVALUATE_EXIT_CODE="${ORT_CLI_EVALUATE_EXIT_CODE:-0}" \
+        && echo "exit-code=${ORT_CLI_EVALUATE_EXIT_CODE}" >> "$GITHUB_OUTPUT"
         [[ -f $ORT_RESULTS_EVALUATOR_PATH ]] && \
           ln -frs $ORT_RESULTS_EVALUATOR_PATH $ORT_RESULTS_CURRENT_PATH || \
           echo -e "\e[1;31m File $ORT_RESULTS_EVALUATOR_PATH not found."
@@ -565,7 +615,7 @@ runs:
       if: contains(inputs.run, 'upload-evaluation-result')
       with:
         name: "${{ env.ORT_RESULTS_ARTIFACT_NAME }}-evaluation-result.json.zip"
-        path: ${{ env.ORT_RESULTS_EVALUATE_PATH }}
+        path: ${{ env.ORT_RESULTS_EVALUATOR_PATH }}
         if-no-files-found: warn
     - name: Upload ORT scan-result.json
       uses: actions/upload-artifact@v4
@@ -575,13 +625,13 @@ runs:
         path: ${{ env.ORT_RESULTS_SCANNER_PATH }}
         if-no-files-found: warn
     - name: Conditionally fail action if returned violations from Evaluator exceeds severity threshold
-      if: contains(inputs.fail-on, 'violations') && contains(env.ORT_CLI_EVALUATE_EXIT_CODE, 2)
+      if: contains(inputs.fail-on, 'violations') && contains(steps.ort-evaluator.output.exit-code, 2)
       shell: bash
       run: |
         echo -e "\e[1;31m Failing action as Evaluator exceeded severity threshold... "
         exit 2
     - name: Conditionally fail action if returned issues from Advisor exceeds severity threshold
-      if: contains(inputs.fail-on, 'issues') && contains(env.ORT_CLI_ADVISE_EXIT_CODE, 2)
+      if: contains(inputs.fail-on, 'issues') && contains(steps.ort-advisor.output.exit-code, 2)
       shell: bash
       run: |
         echo -e "\e[1;31m Failing action as Advisor exceeded severity threshold... "
