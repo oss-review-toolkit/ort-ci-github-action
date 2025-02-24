@@ -625,13 +625,13 @@ runs:
         path: ${{ env.ORT_RESULTS_SCANNER_PATH }}
         if-no-files-found: warn
     - name: Conditionally fail action if returned violations from Evaluator exceeds severity threshold
-      if: contains(inputs.fail-on, 'violations') && contains(steps.ort-evaluator.output.exit-code, 2)
+      if: contains(inputs.fail-on, 'violations') && contains(steps.ort-evaluator.outputs.exit-code, 2)
       shell: bash
       run: |
         echo -e "\e[1;31m Failing action as Evaluator exceeded severity threshold... "
         exit 2
     - name: Conditionally fail action if returned issues from Advisor exceeds severity threshold
-      if: contains(inputs.fail-on, 'issues') && contains(steps.ort-advisor.output.exit-code, 2)
+      if: contains(inputs.fail-on, 'issues') && contains(steps.ort-advisor.outputs.exit-code, 2)
       shell: bash
       run: |
         echo -e "\e[1;31m Failing action as Advisor exceeded severity threshold... "
