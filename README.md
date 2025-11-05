@@ -1,6 +1,7 @@
 # GitHub Action for ORT
 
-Run licensing, security and best practices checks and generate reports/SBOMs using [ORT][ort].
+Run licensing, security, best practices checks and generate reports/Software Bill of Materials (SBOMs) using [ORT][ort]
+within [GitHub Actions][gh-action-docs].
 
 ## Usage
 
@@ -334,6 +335,7 @@ See the [LICENSE](./LICENSE) file in the root of this project for license detail
 OSS Review Toolkit (ORT) is a [Linux Foundation project][lf] and part of [ACT][act].
 
 [act]: https://automatecompliance.org/
+[gh-action-docs]: https://docs.github.com/en/actions
 [gh-action-secrets]: https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository
 [gh-tokens]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [ort]: https://github.com/oss-review-toolkit/ort
