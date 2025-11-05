@@ -99,7 +99,7 @@ Set `fail-on` to fail the action if:
 - policy violations reported by Evaluator exceed the `severeRuleViolationThreshold` level.
 - security issues reported by the Advisor exceed the `severeIssueThreshold` level.
 
-By default `severeRuleViolationThreshold` and `severeIssueThreshold` are set to `WARNING` 
+By default `severeRuleViolationThreshold` and `severeIssueThreshold` are set to `WARNING`
 but you can change this to for example `ERROR` in your [config.yml][ort-config-yml].
 
 ```yaml
@@ -225,7 +225,7 @@ jobs:
 Use `ort-config-repository` to specify the location of your ORT global configuration repository.
 If `ort-config-revision` is not automatically latest state of configuration repository will be used.
 
-Alternatively, you can also place your ORT global configuration files in `~/.ort/config` 
+Alternatively, you can also place your ORT global configuration files in `~/.ort/config`
 prior to running GitHub Action for ORT.
 
 ```yaml
