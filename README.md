@@ -7,6 +7,9 @@ within [GitHub Actions][gh-action-docs].
 
 See [action.yml](action.yml)
 
+Note: All examples below use the main branch.
+When implementing the GitHub Action for ORT in production, it's recommended to use the latest [tags][ort-gh-action-tags].
+
 ### Basic
 
 ```yaml
@@ -19,7 +22,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
 ```
 
 Alternatively, you can also use ORT to download the project sources using Git, Git-repo, Mercurial or Subversion.
@@ -32,7 +35,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           vcs-url: 'https://github.com/jshttp/mime-types.git'
 ```
@@ -63,7 +66,7 @@ jobs:
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           allow-dynamic-versions: 'true'
           ort-cli-args: '-P ort.analyzer.enabledPackageManagers=NPM,Yarn,Yarn2'
@@ -85,7 +88,7 @@ jobs:
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           allow-dynamic-versions: 'true'
           ort-cli-analyze-args: >
@@ -115,7 +118,7 @@ jobs:
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           allow-dynamic-versions: 'true'
           fail-on: 'violations'
@@ -156,7 +159,7 @@ jobs:
             StrictHostKeyChecking no
           END
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           allow-dynamic-versions: 'true'
 ```
@@ -186,7 +189,7 @@ jobs:
           github-server-url: 'https://git.example.com'
           token: ${{ secrets.PERSONAL_TOKEN_2 }}
       - name: Run GitHub action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           ort-config-repository: 'https://oauth2:${{ secrets.PERSONAL_TOKEN_2 }}@git.example.com/ort-project/ort-config.git'
           run: >
@@ -216,7 +219,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: ${{ matrix.repository }}
-      - uses: oss-review-toolkit/ort-ci-github-action@v1
+      - uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           sw-name: ${{ matrix.sw-name }}
 ```
@@ -241,7 +244,7 @@ jobs:
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           ort-config-repository: 'https://github.com/oss-review-toolkit/ort-config'
           ort-config-revision: 'e4ae8f0a2d0415e35d80df0f48dd95c90a992514'
@@ -259,7 +262,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           image: 'my-org/ort-images/ort:latest'
 ```
@@ -288,7 +291,7 @@ jobs:
           repository: 'jshttp/mime-types'
           ref: '2.1.35'
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           db-url: ${{ secrets.POSTGRES_URL }}
           db-username: ${{ secrets.POSTGRES_USERNAME }}
@@ -308,7 +311,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v3
       - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
+        uses: oss-review-toolkit/ort-ci-github-action@main
         with:
           run: >
             cache-dependencies,
@@ -341,5 +344,6 @@ OSS Review Toolkit (ORT) is a [Linux Foundation project][lf] and part of [ACT][a
 [ort]: https://github.com/oss-review-toolkit/ort
 [ort-config-yml]: https://github.com/oss-review-toolkit/ort/blob/main/model/src/main/resources/reference.yml
 [ort-contributing-md]: https://github.com/oss-review-toolkit/.github/blob/main/CONTRIBUTING.md
+[ort-gh-action-tags]: https://github.com/oss-review-toolkit/ort-ci-github-action/tags
 [ort-slack]: http://slack.oss-review-toolkit.org
 [lf]: https://www.linuxfoundation.org
