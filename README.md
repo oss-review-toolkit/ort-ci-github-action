@@ -20,7 +20,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@main
 ```
@@ -62,7 +62,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
@@ -84,7 +84,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
@@ -114,7 +114,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
@@ -136,7 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: 'jshttp/mime-types'
       - name: Add .netrc
@@ -182,7 +182,7 @@ jobs:
           git config --global url."https://oauth2:${{ secrets.PERSONAL_TOKEN_2 }}@git.example.com/".insteadOf "ssh://git@git.example.com/"
           git config --global url."https://oauth2:${{ secrets.PERSONAL_TOKEN_2 }}@git.example.com/".insteadOf "https://git.example.com/"
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: 'example-org/alpha'
           ref: 'master'
@@ -216,7 +216,7 @@ jobs:
             sw-name: beta
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           repository: ${{ matrix.repository }}
       - uses: oss-review-toolkit/ort-ci-github-action@main
@@ -240,7 +240,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: 'jshttp/mime-types'
       - name: Run GitHub Action for ORT
@@ -260,7 +260,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@main
         with:
@@ -286,7 +286,7 @@ jobs:
       - name: Use HTTPS instead of SSH for Git cloning
         run: git config --global url.https://github.com/.insteadOf ssh://git@github.com/
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           repository: 'jshttp/mime-types'
           ref: '2.1.35'
@@ -309,7 +309,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@main
         with:
