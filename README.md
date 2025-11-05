@@ -331,7 +331,7 @@ to any of your questions we recommend you [join our Slack community][ort-slack].
 
 # License
 
-Copyright (C) 2020-2022 [The ORT Project Authors](./NOTICE).
+Copyright (C) 2020-2025 [The ORT Project Authors](./NOTICE).
 
 See the [LICENSE](./LICENSE) file in the root of this project for license details.
 
