@@ -165,6 +165,10 @@ inputs:
     description: |
       The Git revision or branch of the ORT configuration repository to use.
     required: false
+  ort-jdk-java-options:
+    default: '-Xmx5120m'
+    description: |
+      Sets ORT JDK_JAVA_OPTIONS env variable used by ort container, defaults to -Xmx5120m.
   ort-yml-path:
     default: ''
     description: |
@@ -206,10 +210,6 @@ inputs:
       Project version number or release name (use the version from package metadata, not VCS revision).
       By default, the Git short SHA is used.
     required: false
-  ort-jdk-java-options:
-    default: '-Xmx5120m'
-    description: |
-      Sets ORT JDK_JAVA_OPTIONS env variable used by ort container, defaults to -Xmx5120m.
 
 outputs:
   evaluator-exit-code:
