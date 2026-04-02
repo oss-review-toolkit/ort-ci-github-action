@@ -1,11 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    "docker:disable",
-    "helpers:pinGitHubActionDigestsToSemver",
-    ":semanticCommitScopeDisabled",
-    ":semanticCommitTypeAll(deps)"
-  ],
-  "labels": ["dependencies"]
+    "github>oss-review-toolkit/.github//renovate-config"
+  ]
 }
