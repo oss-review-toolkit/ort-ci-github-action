@@ -602,28 +602,28 @@ runs:
             rm -f $ORT_RESULTS_CURRENT_PATH
         fi
     - name: Upload ORT results
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       if: contains(inputs.run, 'upload-results')
       with:
         name: ${{ env.ORT_RESULTS_ARTIFACT_NAME }}
         path: ${{ env.ORT_RESULTS_PATH }}
         if-no-files-found: warn
     - name: Upload ORT advisor-result.json
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       if: contains(inputs.run, 'upload-advisor-result')
       with:
         name: "${{ env.ORT_RESULTS_ARTIFACT_NAME }}-advisor-result.json.zip"
         path: ${{ env.ORT_RESULTS_ADVISOR_PATH }}
         if-no-files-found: warn
     - name: Upload ORT evaluation-result.json
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       if: contains(inputs.run, 'upload-evaluation-result')
       with:
         name: "${{ env.ORT_RESULTS_ARTIFACT_NAME }}-evaluation-result.json.zip"
         path: ${{ env.ORT_RESULTS_EVALUATOR_PATH }}
         if-no-files-found: warn
     - name: Upload ORT scan-result.json
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       if: contains(inputs.run, 'upload-scan-result')
       with:
         name: "${{ env.ORT_RESULTS_ARTIFACT_NAME }}-scan-result.json.zip"
