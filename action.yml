@@ -384,7 +384,7 @@ runs:
         printenv >> "$GITHUB_ENV"
     - name: Cache dependencies
       id: cache-dependencies
-      uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       if: contains(inputs.run, 'cache-dependencies') && startsWith(runner.os, 'Linux')
       env:
         ORT_HOME_PATH: ${{ inputs.ort-home-path }}
@@ -415,7 +415,7 @@ runs:
         key: ${{ runner.os }}-ort-deps-cache
     - name: Cache ORT scan results
       id: cache-scan-results
-      uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       if: contains(inputs.run, 'cache-scan-results') && startsWith(runner.os, 'Linux')
       with:
         path: '${{ env.HOME}}/${{ env.ORT_HOME_PATH }}/scanner/'
